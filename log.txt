@@ -1,0 +1,37 @@
+commit d66c3eabf7ffeaace291a6bd37c1f519bf47ca01
+Author: D2Edev <dmitry.druzhynin@gmail.com>
+Date:   Fri Jun 10 16:51:42 2016 +0300
+
+    added a lot
+
+commit 71c7176900e955d589f6b527ff25b195924c58ed
+Author: D2Edev <dmitry.druzhynin@gmail.com>
+Date:   Fri Jun 10 10:13:18 2016 +0300
+
+    added IDEA folder to gitignore
+
+commit 7cb756ec05883e40c90b747568e80b1684f2e935
+Author: D2Edev <dmitry.druzhynin@gmail.com>
+Date:   Fri Jun 10 10:11:57 2016 +0300
+
+    removed IDEA folder
+
+commit e7ad62de8478942879e8cb399554e2d4372ef7a6
+Author: D2Edev <dmitry.druzhynin@gmail.com>
+Date:   Fri Jun 10 10:07:52 2016 +0300
+
+    init as android project
+
+commit fa41b93e3e6537808ff4a06328a8adc1c0a0f4bc
+Author: Dmitry <D2Edev@users.noreply.github.com>
+Date:   Fri Jun 10 09:47:29 2016 +0300
+
+    Update README.md
+    
+    added app description in readme
+
+commit 4353f43c0a875b48e2e505cf48aa98db76b93ba7
+Author: Dmitry <D2Edev@users.noreply.github.com>
+Date:   Fri Jun 10 09:42:36 2016 +0300
+
+    Initial commit

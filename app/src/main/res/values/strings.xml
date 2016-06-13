@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DistinctiveRing</string>
+    <string name="app_name">Distinctive Ring</string>
+    <string name="title_activity_main_fab">Tiny Distinctive Ring</string>
+    <string name="stub_phone_number">+12 (345) 67 88 9900</string>
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main_fab"
@@ -9,4 +9,9 @@
     tools:context="io.github.d2edev.distinctivering.MainFabActivity"
     tools:showIn="@layout/activity_main_fab">
 
-</android.support.constraint.ConstraintLayout>
+    <ListView
+        android:id="@+id/listview_allowed_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+</FrameLayout>
