@@ -7,5 +7,13 @@
     <dimen name="listview_middle_margin">16dp</dimen>
     <dimen name="listview_image_view">48dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="giant_margin">64dp</dimen>
+
+    <dimen name="font_16">16sp</dimen>
+    <dimen name="font_20">20sp</dimen>
+    <dimen name="font_24">24sp</dimen>
+    <dimen name="font_34">34sp</dimen>
+    <dimen name="font_45">45sp</dimen>
+    <dimen name="font_46">56sp</dimen>
 
 </resources>

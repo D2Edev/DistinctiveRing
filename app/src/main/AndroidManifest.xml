@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainFabActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_main_fab"
             android:theme="@style/AppTheme.NoActionBar">

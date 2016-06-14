@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingRight="@dimen/listview_middle_margin">
+    android:paddingRight="@dimen/listview_middle_margin"
+    android:paddingEnd="@dimen/listview_middle_margin">
     
     <ImageView
         android:layout_alignParentTop="true"
@@ -11,7 +13,7 @@
         android:layout_width="@dimen/listview_image_view"
         android:layout_height="@dimen/listview_image_view"
         android:layout_margin="@dimen/listview_small_margin"
-        android:src="@mipmap/ic_launcher"
+        tools:src="@mipmap/ic_launcher"
         />
     
     <TextView
@@ -19,10 +21,10 @@
         android:id="@+id/list_entry_name"
         android:fontFamily="sans-serif-condensed"
         android:layout_width="match_parent"
-        android:layout_height="24sp"
+        android:layout_height="@dimen/font_24"
         android:textColor="@color/my_primary_text"
         android:layout_marginTop="@dimen/listview_small_margin"
-        android:text="@string/app_name"
+        tools:text="@string/app_name"
         android:gravity="center_vertical"
         />
 
@@ -32,9 +34,9 @@
         android:id="@+id/list_entry__phone"
         android:fontFamily="sans-serif-condensed"
         android:layout_width="match_parent"
-        android:layout_height="20sp"
+        android:layout_height="@dimen/font_20"
         android:textColor="@color/my_secondary_text"
-        android:text="@string/stub_phone_number"
+        tools:text="@string/stub_phone_number"
         android:gravity="center_vertical"
         />
 

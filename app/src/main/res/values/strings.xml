@@ -2,4 +2,17 @@
     <string name="app_name">Distinctive Ring</string>
     <string name="title_activity_main_fab">Tiny Distinctive Ring</string>
     <string name="stub_phone_number">+12 (345) 67 88 9900</string>
+
+    <string name="action_add_manual_title">Manual add</string>
+    <string name="action_add_from_list">List add</string>
+    <string name="action_main_about_title">About...</string>
+    <string name="action_main_add_title">Add number</string>
+    <string name="action_menu_main_help_title">Help</string>
+    <string name="action_menu_main_delete_title">Delete numbers(s)</string>
+    <string name="manual_add_dialog_title">Add entry manually</string>
+    <string name="dialog_first_name_hint">Enter first name</string>
+    <string name="dialog_second_name_hint">Enter second name</string>
+    <string name="dialog_number_hint">+00 (000) 00-0000</string>
+    <string name="add_entry">Add entry</string>
+    <string name="dialog_cancel">CANCEL</string>
 </resources>

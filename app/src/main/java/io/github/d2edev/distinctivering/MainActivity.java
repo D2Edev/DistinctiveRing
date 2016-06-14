@@ -1,23 +1,26 @@
 package io.github.d2edev.distinctivering;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.db.DataDBHelper;
 import io.github.d2edev.distinctivering.util.Utility;
 
-public class MainFabActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
+    public static final String TAG="TAG_MainFabActivity";
+
     private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_fab);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -32,6 +35,9 @@ public class MainFabActivity extends AppCompatActivity {
         });
 
         DataDBHelper dbHelper = new DataDBHelper(this);
+
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().add(new MainListFragment(), "ma").commit();
 
     }
 
@@ -49,4 +55,19 @@ public class MainFabActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_about:{
+                Toast.makeText(this,getString(R.string.action_main_about_title),Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
