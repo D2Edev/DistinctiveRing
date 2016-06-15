@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_main_fab"
             android:theme="@style/AppTheme.NoActionBar">
@@ -31,9 +31,13 @@
         </receiver>
 
         <activity
-            android:name=".AddContactActivity"
+            android:name=".ui.AddContactActivity"
             android:screenOrientation="portrait"
             ></activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".db.DataProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

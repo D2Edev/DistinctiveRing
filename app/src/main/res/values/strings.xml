@@ -13,6 +13,7 @@
     <string name="dialog_first_name_hint">Enter first name</string>
     <string name="dialog_second_name_hint">Enter second name</string>
     <string name="dialog_number_hint">+00 (000) 00-0000</string>
-    <string name="add_entry">Add entry</string>
+    <string name="dialog_add_entry">Add entry</string>
     <string name="dialog_cancel">CANCEL</string>
+    <string name="content_authority">io.github.d2edev.distinctivering</string>
 </resources>

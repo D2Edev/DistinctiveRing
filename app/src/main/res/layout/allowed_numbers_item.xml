@@ -9,7 +9,7 @@
     
     <ImageView
         android:layout_alignParentTop="true"
-        android:id="@+id/list_entry_pic"
+        android:id="@+id/allowed_list_entry_pic"
         android:layout_width="@dimen/listview_image_view"
         android:layout_height="@dimen/listview_image_view"
         android:layout_margin="@dimen/listview_small_margin"
@@ -17,8 +17,8 @@
         />
     
     <TextView
-        android:layout_toRightOf="@id/list_entry_pic"
-        android:id="@+id/list_entry_name"
+        android:layout_toRightOf="@id/allowed_list_entry_pic"
+        android:id="@+id/allowed_list_entry_name"
         android:fontFamily="sans-serif-condensed"
         android:layout_width="match_parent"
         android:layout_height="@dimen/font_24"
@@ -29,9 +29,9 @@
         />
 
     <TextView
-        android:layout_below="@id/list_entry_name"
-        android:layout_toRightOf="@id/list_entry_pic"
-        android:id="@+id/list_entry__phone"
+        android:layout_below="@id/allowed_list_entry_name"
+        android:layout_toRightOf="@id/allowed_list_entry_pic"
+        android:id="@+id/allowed_list_entry_phone"
         android:fontFamily="sans-serif-condensed"
         android:layout_width="match_parent"
         android:layout_height="@dimen/font_20"

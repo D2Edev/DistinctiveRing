@@ -16,6 +16,19 @@ public class DataDBHelper extends SQLiteOpenHelper{
     //filename to keep db data
     public static final String DATABASE_NAME="TinyDistRing.db";
 
+    //for set of records containing all data from both tables
+    public static final String SQL_QUERY_ALL_PERSONS_NUMBERS = "SELECT "
+            + DataContract.Person.COLUMN_FIRST_NAME + ", "
+            + DataContract.Person.COLUMN_LAST_NAME + ", "
+            + DataContract.Person.COLUMN_PIC_PATH + ", "
+            + DataContract.PhoneNumber.COLUMN_NUMBER + ", "
+            + DataContract.Person.TABLE_NAME + "." + DataContract.Person._ID+ ", "
+            + DataContract.PhoneNumber.TABLE_NAME + "." + DataContract.PhoneNumber._ID
+            + " FROM " + DataContract.Person.TABLE_NAME
+            + " INNER JOIN " + DataContract.PhoneNumber.TABLE_NAME
+            + " ON " + DataContract.Person.TABLE_NAME + "." + DataContract.Person._ID
+            + " = " + DataContract.PhoneNumber.TABLE_NAME + "."+ DataContract.PhoneNumber.COLUMN_KEY_PERSON;
+
     public DataDBHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
@@ -23,7 +36,7 @@ public class DataDBHelper extends SQLiteOpenHelper{
     //Table to keep person data in
     private static final String SQL_CREATE_TABLE_PERSON="CREATE TABLE " +
             DataContract.Person.TABLE_NAME + " ("+
-            DataContract.Person._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            DataContract.Person._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
             DataContract.Person.COLUMN_FIRST_NAME + " TEXT NOT NULL, "+
             DataContract.Person.COLUMN_LAST_NAME + " TEXT NOT NULL, "+
             DataContract.Person.COLUMN_PIC_PATH + " TEXT "+
@@ -34,9 +47,9 @@ public class DataDBHelper extends SQLiteOpenHelper{
             DataContract.PhoneNumber.TABLE_NAME + " ("+
             DataContract.PhoneNumber._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
             DataContract.PhoneNumber.COLUMN_KEY_PERSON + " INTEGER NOT NULL, "+
-            DataContract.PhoneNumber.COLUMN_NUMBER + " INTEGER UNIQUE NOT NULL, "+
+            DataContract.PhoneNumber.COLUMN_NUMBER + " TEXT UNIQUE NOT NULL, "+
             "FOREIGN KEY (" + DataContract.PhoneNumber.COLUMN_KEY_PERSON+
-            " ) REFERENCES " + DataContract.Person.TABLE_NAME + " ("+
+            ") REFERENCES " + DataContract.Person.TABLE_NAME + " ("+
             DataContract.Person._ID+ " )"+
             ");";
 

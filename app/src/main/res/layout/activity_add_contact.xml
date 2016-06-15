@@ -5,6 +5,6 @@
     android:id="@+id/activity_add_contact"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.github.d2edev.distinctivering.AddContactActivity">
+    tools:context="io.github.d2edev.distinctivering.ui.AddContactActivity">
 
 </android.support.constraint.ConstraintLayout>

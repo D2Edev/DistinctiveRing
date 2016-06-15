@@ -1,15 +1,17 @@
-package io.github.d2edev.distinctivering;
+package io.github.d2edev.distinctivering.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.db.DataDBHelper;
 import io.github.d2edev.distinctivering.util.Utility;
 
@@ -34,10 +36,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DataDBHelper dbHelper = new DataDBHelper(this);
 
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().add(new MainListFragment(), "ma").commit();
+
+        Utility.firstLaunchPreparations(this);
 
     }
 
@@ -47,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
             Utility.setDistinctiveRingEnabled(this,false);
             fab.setImageResource(R.drawable.ic_volume_off_white);
-            Toast.makeText(this,"enabled:" + Utility.isDistinctiveRingEnabled(this),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, PhoneNumberUtils.formatNumber("123456","UA"),Toast.LENGTH_SHORT).show();
         }else{
             Utility.setDistinctiveRingEnabled(this,true);
             fab.setImageResource(R.drawable.ic_volume_up_white);
-            Toast.makeText(this,"enabled:" + Utility.isDistinctiveRingEnabled(this),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,PhoneNumberUtils.formatNumber("380675721286","UA"),Toast.LENGTH_SHORT).show();
         }
     }
 
