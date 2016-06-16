@@ -67,4 +67,11 @@ public class DataDBHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + DataContract.Person.TABLE_NAME);
         onCreate(db);
     }
+
+
+    public void reinit(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + DataContract.PhoneNumber.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DataContract.Person.TABLE_NAME);
+        onCreate(db);
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import io.github.d2edev.distinctivering.util.Utility;
  */
 
 public class MainListAdapter extends CursorAdapter{
+    public static final String TAG="TAG_"+MainListAdapter.class.getSimpleName();
 
     //FirstName+SecondName if true, SecondName+FirstName otherwise
     private boolean mNameNativeOrder=true;
@@ -47,6 +49,8 @@ public class MainListAdapter extends CursorAdapter{
         //Cursor should contain following columns in following order
         //FistName,SecondName,PicPath,Number
         String name="";
+        Log.d(TAG, "bindView: cursor " + cursor.getString(0) +" " +cursor.getString(1)+ " "
+                + cursor.getString(2)+ " " + cursor.getString(3) );
         if (mNameNativeOrder){
             name=cursor.getString(0)+" "+ cursor.getString(1);
         }else{

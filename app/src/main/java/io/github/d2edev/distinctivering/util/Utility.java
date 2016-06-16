@@ -4,13 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Array;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
+import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.ui.MainActivity;
 
 /**
@@ -18,10 +27,13 @@ import io.github.d2edev.distinctivering.ui.MainActivity;
  */
 
 public class Utility {
+    private static final String TAG = "TAG_" + Utility.class.getSimpleName();
     public static final String KEY_ENABLE_DISTINCTIVE_RING = "enable_distinctive_ring";
     public static final String KEY_PREVIOUS_RING_VOLUME_LEVEL = "prev_ring_vol_level";
     public static final String KEY_FIRST_LAUNCH = "is_first_launch";
     public static final String PIC_DIR = "pics";
+    public static final String PIC_DEFAULT_NAME = "ic_person_default.png";
+    public static final String EXT = ".png";
 
     /**
      * Helper method to set needed ring status in shared preferences
@@ -76,8 +88,12 @@ public class Utility {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isFirstLaunch = sp.getBoolean(KEY_FIRST_LAUNCH, true);
         if (isFirstLaunch) {
-            context.getDir(PIC_DIR, Context.MODE_PRIVATE);
-            sp.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
+            File fileDir = context.getDir(PIC_DIR, Context.MODE_PRIVATE);
+            String defaultPicPath = fileDir.getPath() + File.separator + PIC_DEFAULT_NAME;
+            Bitmap defPic = BitmapFactory.decodeResource(context.getResources(), R.raw.ic_person_green);
+            if (storeImage(defPic, defaultPicPath)) {
+                sp.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
+            }
         }
     }
 
@@ -85,12 +101,12 @@ public class Utility {
     public static void setImage(ImageView imageView, String pathToPicFile, int defaultResouceId) {
 
         //if path is empty or null put default image
-        if (pathToPicFile.equals(null) || pathToPicFile.equals("")) {
+        if (pathToPicFile==null || pathToPicFile.equals("")) {
             imageView.setImageResource(defaultResouceId);
             return;
         }
 
-        //if null returned due to some reson - put default image otherwise put pic
+        //if null returned due to some reason - put default image otherwise put pic
         Bitmap bitmap = decodeSampledBitmapFromFile(pathToPicFile, 50, 50);
         if (bitmap == null) {
             imageView.setImageResource(defaultResouceId);
@@ -99,6 +115,23 @@ public class Utility {
         }
 
 
+    }
+
+
+    public static Bitmap decodeSampledBitmapFromUri(Uri uri, Context context, int reqWidth, int reqHeight) throws IOException {
+        Bitmap bitmap = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        InputStream input = null;
+        input = context.getContentResolver().openInputStream(uri);
+        bitmap = BitmapFactory.decodeStream(input, null, options);
+        options.inSampleSize = Utility.calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false;
+        input.close();
+        input = context.getContentResolver().openInputStream(uri);
+        bitmap = BitmapFactory.decodeStream(input, null, options);
+        Log.d(TAG, "decodeSampledBitmapFromUri: " + bitmap);
+        return bitmap;
     }
 
     public static Bitmap decodeSampledBitmapFromFile(String filePath, int reqWidth, int reqHeight) {
@@ -121,6 +154,7 @@ public class Utility {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
+        Log.d(TAG, "calculateInSampleSize: h:" + height + " w:" + width);
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
@@ -135,7 +169,34 @@ public class Utility {
                 inSampleSize *= 2;
             }
         }
-
+        Log.d(TAG, "calculateInSampleSize: " + inSampleSize);
         return inSampleSize;
     }
+
+    public static boolean storeImage(Bitmap bitmapImage, String fileName) {
+        FileOutputStream fos = null;
+        File pictureFile = new File(fileName);
+        if (pictureFile == null) {
+            Log.d(TAG,
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            return false;
+        }
+        try {
+
+            fos = new FileOutputStream(pictureFile);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                Log.d(TAG, "Stream error: " + e.getMessage());
+            }
+
+        }
+        return true;
+    }
+
+
 }

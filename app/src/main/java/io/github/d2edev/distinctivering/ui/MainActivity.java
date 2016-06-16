@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(new MainListFragment(), "ma").commit();
+        fm.beginTransaction().add(R.id.fragment_container,new MainListFragment(), "ma").commit();
 
         Utility.firstLaunchPreparations(this);
 

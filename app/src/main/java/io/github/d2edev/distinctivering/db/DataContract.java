@@ -69,9 +69,9 @@ public class DataContract {
             return ContentUris.withAppendedId(idURI, id);
         }
 
-        public static Uri buildPhoneNumberUriByValue(long id) {
-            Uri valueURI=CONTENT_URI.buildUpon().appendPath(BY_VALUE).build();
-            return ContentUris.withAppendedId(valueURI, id);
+        public static Uri buildPhoneNumberUriByValue(String value) {
+            Uri valueURI=CONTENT_URI.buildUpon().appendPath(BY_VALUE).appendPath(value).build();
+            return valueURI;
         }
 
         //gets argument from URI, whether it is a number id (".../number/id/<arg>")

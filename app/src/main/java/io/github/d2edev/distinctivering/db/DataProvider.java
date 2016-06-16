@@ -73,6 +73,7 @@ public class DataProvider extends ContentProvider {
             }
             case ALL_NUMBERS: {
                 cursor = getNumberCursor(projection, selection, selectionArgs, sortOrder);
+                break;
             }
             case NUMBER_BY_ID: {
                 String mySelection = DataContract.PhoneNumber._ID + "=?";
@@ -86,8 +87,8 @@ public class DataProvider extends ContentProvider {
                 cursor = getNumberCursor(projection, mySelection, mySelectionArgs, sortOrder);
                 break;
             }
-            case ALL_PERSONS_WITH_NUMBERS:{
-                cursor=mDBHelper.getReadableDatabase().rawQuery(DataDBHelper.SQL_QUERY_ALL_PERSONS_NUMBERS,selectionArgs);
+            case ALL_PERSONS_WITH_NUMBERS: {
+                cursor = mDBHelper.getReadableDatabase().rawQuery(DataDBHelper.SQL_QUERY_ALL_PERSONS_NUMBERS, selectionArgs);
                 break;
             }
             default:
@@ -159,9 +160,10 @@ public class DataProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri = null;
 
+        long id = 0;
         switch (sUriMatcher.match(uri)) {
             case ALL_PERSONS: {
-                long id = db.insert(DataContract.Person.TABLE_NAME, null, values);
+                id = db.insert(DataContract.Person.TABLE_NAME, null, values);
                 if (id > 0) {
                     returnUri = DataContract.Person.builPersonUri(id);
                 } else {
@@ -170,7 +172,7 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             case ALL_NUMBERS: {
-                long id = db.insert(DataContract.PhoneNumber.TABLE_NAME, null, values);
+                id = db.insert(DataContract.PhoneNumber.TABLE_NAME, null, values);
                 if (id > 0) {
                     returnUri = DataContract.PhoneNumber.buildPhoneNumberUriByID(id);
                 } else {
@@ -181,7 +183,7 @@ public class DataProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Insert: unknown uri " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (id > 0) getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
@@ -260,8 +262,6 @@ public class DataProvider extends ContentProvider {
         }
         return rowsUpdated;
     }
-
-
 
 
     @Override

@@ -30,7 +30,7 @@
         android:layout_alignLeft="@+id/dialog_header"
         android:layout_alignStart="@+id/dialog_header"
         android:layout_margin="@dimen/listview_small_margin"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@drawable/ic_person_green" />
 
     <EditText
         android:id="@+id/dialog_first_name"
