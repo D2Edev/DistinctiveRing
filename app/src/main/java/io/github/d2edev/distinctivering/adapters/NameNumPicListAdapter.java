@@ -21,21 +21,22 @@ import io.github.d2edev.distinctivering.util.Utility;
  * Created by d2e on 15.06.16.
  */
 
-public class MainListAdapter extends CursorAdapter{
-    public static final String TAG="TAG_"+MainListAdapter.class.getSimpleName();
+public class NameNumPicListAdapter extends CursorAdapter{
+    public static final String TAG="TAG_"+NameNumPicListAdapter.class.getSimpleName();
 
     //FirstName+SecondName if true, SecondName+FirstName otherwise
     private boolean mNameNativeOrder=true;
 
 
 
-    public MainListAdapter(Context context, Cursor c, int flags) {
+
+    public NameNumPicListAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view= LayoutInflater.from(context).inflate(R.layout.allowed_numbers_item,parent,false);
+        View view= LayoutInflater.from(context).inflate(R.layout.list_numbers_allowed_item,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return  view;
@@ -54,7 +55,7 @@ public class MainListAdapter extends CursorAdapter{
         if (mNameNativeOrder){
             name=cursor.getString(0)+" "+ cursor.getString(1);
         }else{
-            name=cursor.getString(1)+" "+ cursor.getString(0);
+            name=cursor.getString(1)+", "+ cursor.getString(0);
         }
         viewHolder.tvFullName.setText(name);
 

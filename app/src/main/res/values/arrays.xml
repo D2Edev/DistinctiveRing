@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sortBy">
+        <item>@string/sort_by_first_name</item>
+        <item>@string/sort_by_last_name</item>
+        <item>@string/sort_by_number</item>
+    </string-array>
+
+    <string-array name="sortOrder">
+        <item>@string/sort_asc</item>
+        <item>@string/sort_desc</item>
+    </string-array>
+
+</resources>

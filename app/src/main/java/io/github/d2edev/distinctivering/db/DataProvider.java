@@ -88,7 +88,7 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             case ALL_PERSONS_WITH_NUMBERS: {
-                cursor = mDBHelper.getReadableDatabase().rawQuery(DataDBHelper.SQL_QUERY_ALL_PERSONS_NUMBERS, selectionArgs);
+                cursor = getAllCursor(projection, selection, selectionArgs, sortOrder);
                 break;
             }
             default:
@@ -127,6 +127,16 @@ public class DataProvider extends ContentProvider {
                 null,
                 sortOrder
         );
+        return cursor;
+    }
+
+    //method of getting all data from db
+    private Cursor getAllCursor(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor cursor = null;
+        String sqlQuery = DataDBHelper.SQL_QUERY_ALL_PERSONS_NUMBERS;
+        //check if sort order is added and it's more or less ok
+        if (sortOrder != null && !sortOrder.equals("")) sqlQuery = sqlQuery + " ORDER BY " + sortOrder;
+        cursor = mDBHelper.getReadableDatabase().rawQuery(sqlQuery, selectionArgs);
         return cursor;
     }
 

@@ -32,7 +32,7 @@ public class EventProcessor implements IncomingCallListener {
         int volCurrent = am.getStreamVolume(AudioManager.STREAM_RING);
         int volMax = am.getStreamMaxVolume(AudioManager.STREAM_RING);
         if (Utility.isDistinctiveRingEnabled(context)) {
-            if (Utility.isNUmberInList(number)) {
+            if (Utility.isNUmberInList(context, number)) {
                 Utility.saveVolumeLevel(context, volCurrent);
                 am.setStreamVolume(AudioManager.STREAM_RING, volMax, 0);
                 int val = am.getStreamVolume(AudioManager.STREAM_RING);

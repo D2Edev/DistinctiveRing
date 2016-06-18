@@ -16,4 +16,10 @@
     <string name="dialog_add_entry">Add entry</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="content_authority">io.github.d2edev.distinctivering</string>
+    <string name="sort_by_first_name">by First Name</string>
+    <string name="sort_by_last_name">by Last name</string>
+    <string name="sort_by_number">by Number</string>
+    <string name="sort_asc">Asc</string>
+    <string name="sort_desc">Desc</string>
+    <string name="delete_acticity_label">Delete record(s)</string>
 </resources>

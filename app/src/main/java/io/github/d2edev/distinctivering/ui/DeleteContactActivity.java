@@ -5,23 +5,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.util.Utility;
 
-public class MainActivity extends AppCompatActivity {
+public class DeleteContactActivity extends AppCompatActivity {
     public static final String TAG="TAG_MainFabActivity";
 
     private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_delete_contact);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -30,32 +28,22 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeDistinctiveRingSettings();
+                deleteSelectedrecords();
 
             }
         });
 
 
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.main_fragment_container,new MainFragment(), MainFragment.TAG).commit();
-
-        Utility.firstLaunchPreparations(this);
+        fm.beginTransaction().add(R.id.delete_fragment_container,new DeleteFragment(), DeleteFragment.TAG).commit();
+getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
-    //process click
-    private void changeDistinctiveRingSettings() {
-        if(Utility.isDistinctiveRingEnabled(this)){
+    private void deleteSelectedrecords() {
 
-            Utility.setDistinctiveRingEnabled(this,false);
-            fab.setImageResource(R.drawable.ic_volume_off_white);
-            Toast.makeText(this, PhoneNumberUtils.formatNumber("123456","UA"),Toast.LENGTH_SHORT).show();
-        }else{
-            Utility.setDistinctiveRingEnabled(this,true);
-            fab.setImageResource(R.drawable.ic_volume_up_white);
-            Toast.makeText(this,PhoneNumberUtils.formatNumber("380675721286","UA"),Toast.LENGTH_SHORT).show();
-        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
