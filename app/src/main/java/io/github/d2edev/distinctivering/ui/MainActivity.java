@@ -15,7 +15,9 @@ import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.util.Utility;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG="TAG_MainFabActivity";
+    public static final String TAG="TAG_"+MainActivity.class.getSimpleName();
+    
+
 
     private FloatingActionButton fab;
     @Override
