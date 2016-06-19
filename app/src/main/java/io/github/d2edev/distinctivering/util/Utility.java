@@ -2,10 +2,12 @@ package io.github.d2edev.distinctivering.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -32,9 +34,9 @@ public class Utility {
     public static final String EXT = ".png";
     public static final String KEY_SORT_INDEX = "list_sort_index";
     public static final String KEY_SORT_ORDER = "key_sort_order";
-    public static final int SORT_BY_FIRST_NAME=0;
-    public static final int SORT_BY_LAST_NAME=1;
-    public static final int SORT_BY_NUMBER=2;
+    public static final int SORT_BY_FIRST_NAME = 0;
+    public static final int SORT_BY_LAST_NAME = 1;
+    public static final int SORT_BY_NUMBER = 2;
 
     /**
      * Helper method to set needed ring status in shared preferences
@@ -82,14 +84,35 @@ public class Utility {
     }
 
     public static boolean isNUmberInList(Context context, String number) {
+        boolean result=false;
+        Cursor cursor = context.getContentResolver()
+                .query(
+                        DataContract.PhoneNumber.CONTENT_URI,
+                        new String[]{DataContract.PhoneNumber.COLUMN_NUMBER},
+                        null,
+                        null,
+                        null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Log.d(TAG, "isNUmberInList: cursor position" + cursor.getPosition());
+                if (PhoneNumberUtils.compare(cursor.getString(0), number)) {
+                    result=true;
+                    break;
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
 
-        return "+380675721286".equals(number);
+
     }
 
 
     /**
      * Helper method called once to make preparations:
      * create dir to store user pics, put there defult user pic
+     *
      * @param context Context from which method is called
      */
     public static void firstLaunchPreparations(Context context) {
@@ -99,6 +122,7 @@ public class Utility {
             File fileDir = context.getDir(PIC_DIR, Context.MODE_PRIVATE);
             String defaultPicPath = fileDir.getPath() + File.separator + PIC_DEFAULT_NAME;
             Bitmap defPic = BitmapFactory.decodeResource(context.getResources(), R.raw.ic_person_green);
+            sp.edit().putBoolean(KEY_ENABLE_DISTINCTIVE_RING, false).apply();
             if (storeImageasPNG(defPic, defaultPicPath)) {
                 sp.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
             }
@@ -107,14 +131,15 @@ public class Utility {
 
     /**
      * Helper method to set image which ImagView shows
-     * @param imageView image view to set image to
-     * @param pathToPicFile path to image file which we use to show
+     *
+     * @param imageView        image view to set image to
+     * @param pathToPicFile    path to image file which we use to show
      * @param defaultResouceId resource ID for default image which is shown if file is absent,
-     * corrupted, etc
+     *                         corrupted, etc
      */
     public static void setImage(ImageView imageView, String pathToPicFile, int defaultResouceId) {
         //if path is empty or null put default image
-        if (pathToPicFile==null || pathToPicFile.equals("")) {
+        if (pathToPicFile == null || pathToPicFile.equals("")) {
             imageView.setImageResource(defaultResouceId);
             return;
         }
@@ -131,9 +156,10 @@ public class Utility {
 
     /**
      * Helper method to get sampled bitmap form provided URI
-     * @param uri locates source bitmap
-     * @param context Context from which method is called
-     * @param reqWidth int, is required width in pixels (should be above 0)
+     *
+     * @param uri       locates source bitmap
+     * @param context   Context from which method is called
+     * @param reqWidth  int, is required width in pixels (should be above 0)
      * @param reqHeight int, is required height in pixels (should be above 0)
      * @return sampled Bitmap or null
      */
@@ -156,8 +182,9 @@ public class Utility {
 
     /**
      * Helper method to get sampled bitmap form provided file path
-     * @param filePath String, locates source file
-     * @param reqWidth int, is required width in pixels (should be above 0)
+     *
+     * @param filePath  String, locates source file
+     * @param reqWidth  int, is required width in pixels (should be above 0)
      * @param reqHeight int, is required height in pixels (should be above 0)
      * @return sampled Bitmap or null
      */
@@ -179,8 +206,9 @@ public class Utility {
     /**
      * Helper method to get ratio by which bitmap should be downsampled to have closest pixel
      * dimension mathch to requested numbers
-     * @param options BitmapFactory.Options which provide info on current bitmap size
-     * @param reqWidth int, is required width in pixels (should be above 0)
+     *
+     * @param options   BitmapFactory.Options which provide info on current bitmap size
+     * @param reqWidth  int, is required width in pixels (should be above 0)
      * @param reqHeight int, is required height in pixels (should be above 0)
      * @return sampled Bitmap or null
      */
@@ -212,8 +240,9 @@ public class Utility {
     /**
      * Helper method to store provided bitmap to provided file path as PNG format
      * dimension mathch to requested numbers
+     *
      * @param bitmapImage Bitmap which caontains image
-     * @param fileName String which contains path to file to be saved, incl filename and extension
+     * @param fileName    String which contains path to file to be saved, incl filename and extension
      * @return true is save is ok, otherwise false
      */
     public static boolean storeImageasPNG(Bitmap bitmapImage, String fileName) {
@@ -247,21 +276,21 @@ public class Utility {
      * 1=BY SECOND NAME
      * 2=BY NUMBER
      * dimension mathch to requested numbers
+     *
      * @param context Context from which method is called
      * @return int as index
      */
 
     public static int getSortTypeIndex(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt(KEY_SORT_INDEX,0);
+        return sp.getInt(KEY_SORT_INDEX, 0);
     }
 
     public static void setSortTypeIndex(Context context, int index) {
-        if(index<0||index>2)index=0;
+        if (index < 0 || index > 2) index = 0;
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt(KEY_SORT_INDEX,index).apply();
+        sp.edit().putInt(KEY_SORT_INDEX, index).apply();
     }
-
 
 
     /**
@@ -270,29 +299,33 @@ public class Utility {
      * 1=BY SECOND NAME
      * 2=BY NUMBER
      * dimension mathch to requested numbers
+     *
      * @param sortIndex int sort type index for allowed number list
      * @return String column name to sort on
      */
-    public static String getSortColumnName(int sortIndex){
-        switch (sortIndex){
-            case SORT_BY_FIRST_NAME: return DataContract.Person.COLUMN_FIRST_NAME;
-            case SORT_BY_LAST_NAME: return DataContract.Person.COLUMN_LAST_NAME;
-            case SORT_BY_NUMBER: return DataContract.PhoneNumber.COLUMN_NUMBER;
+    public static String getSortColumnName(int sortIndex) {
+        switch (sortIndex) {
+            case SORT_BY_FIRST_NAME:
+                return DataContract.Person.COLUMN_FIRST_NAME;
+            case SORT_BY_LAST_NAME:
+                return DataContract.Person.COLUMN_LAST_NAME;
+            case SORT_BY_NUMBER:
+                return DataContract.PhoneNumber.COLUMN_NUMBER;
         }
         return DataContract.Person.COLUMN_FIRST_NAME;
     }
 
     public static void setSortOrderAscending(Context context, boolean value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(KEY_SORT_ORDER,value).apply();
+        sp.edit().putBoolean(KEY_SORT_ORDER, value).apply();
     }
 
     public static boolean isSortOrderAscending(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(KEY_SORT_ORDER,true);
+        return sp.getBoolean(KEY_SORT_ORDER, true);
     }
 
     public static int getSortOrderIndex(boolean sortAsc) {
-        return sortAsc?0:1;
+        return sortAsc ? 0 : 1;
     }
 }

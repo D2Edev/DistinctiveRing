@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import java.io.File;
@@ -27,15 +26,15 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
     public static final String KEY_LAST_NAME = "klm";
     public static final String KEY_NUMBER = "kn";
     public static final String KEY_IMAGE_URI = "kiu";
-    private Activity activity;
+    private Context context;
     private DataSetWatcher dataSetWatcher;
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
-    public ManualAddDataSaveTask(Activity activity) {
-        this.activity = activity;
+    public ManualAddDataSaveTask(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
             selectionArgs = new String[]{firstName, lastName};
 
             //query provider using selection
-            Cursor cursor = activity.getContentResolver().query(DataContract.Person.CONTENT_URI, null, selection, selectionArgs, null);
+            Cursor cursor = context.getContentResolver().query(DataContract.Person.CONTENT_URI, null, selection, selectionArgs, null);
             if (cursor != null && cursor.getCount() > 0) {
                 //if person already exists
                 cursor.moveToFirst();
@@ -70,7 +69,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                 ContentValues personRecord = new ContentValues();
                 personRecord.put(DataContract.Person.COLUMN_FIRST_NAME, firstName);
                 personRecord.put(DataContract.Person.COLUMN_LAST_NAME, lastName);
-                Uri newPersonUri = activity.getContentResolver().insert(DataContract.Person.CONTENT_URI, personRecord);
+                Uri newPersonUri = context.getContentResolver().insert(DataContract.Person.CONTENT_URI, personRecord);
                 try {
                     //and get ID from saved entity to be ready to save number
                     idPerson = Long.parseLong(DataContract.Person.getPersonIdFromUri(newPersonUri));
@@ -87,7 +86,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                 parcelable = params[i].getParcelable(KEY_IMAGE_URI);
                 if (parcelable != null && parcelable instanceof Bitmap) {
                     bitmap = (Bitmap) parcelable;
-                    String picPath = activity.getDir(Utility.PIC_DIR, Context.MODE_PRIVATE).getPath()
+                    String picPath = context.getDir(Utility.PIC_DIR, Context.MODE_PRIVATE).getPath()
                             + File.separator
                             + lastName + "_" + firstName + "_" + idPerson + Utility.EXT;
                     //save pic
@@ -97,7 +96,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                     selectionArgs = new String[]{"" + idPerson};
                     ContentValues personRecord = new ContentValues();
                     personRecord.put(DataContract.Person.COLUMN_PIC_PATH, picPath);
-                    activity.getContentResolver().update(DataContract.Person.CONTENT_URI, personRecord, selection, selectionArgs);
+                    context.getContentResolver().update(DataContract.Person.CONTENT_URI, personRecord, selection, selectionArgs);
                 }
 
                 //prepare and save phone data
@@ -105,7 +104,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                 ContentValues phoneRecord = new ContentValues();
                 phoneRecord.put(DataContract.PhoneNumber.COLUMN_NUMBER, number);
                 phoneRecord.put(DataContract.PhoneNumber.COLUMN_KEY_PERSON, idPerson);
-                activity.getContentResolver().insert(DataContract.PhoneNumber.CONTENT_URI, phoneRecord);
+                context.getContentResolver().insert(DataContract.PhoneNumber.CONTENT_URI, phoneRecord);
             }
         }
         return null;
@@ -113,7 +112,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        dataSetWatcher.dataSetChanged();
+        if (dataSetWatcher != null) dataSetWatcher.dataSetChanged();
     }
 
     public void setDataSetWatcher(DataSetWatcher dataSetWatcher) {

@@ -5,12 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 /**
  * Created by d2e on 10.06.16.
  */
 
 public class PhoneEventReceiver extends BroadcastReceiver {
+    public static final String TAG="TAG_"+PhoneEventReceiver.class.getSimpleName();
 
     private IncomingCallListener incomingCallListener;
 
@@ -28,6 +30,7 @@ public class PhoneEventReceiver extends BroadcastReceiver {
             switch (tm.getCallState()) {
                 case TelephonyManager.CALL_STATE_RINGING: {
                     incomingCallListener.onIncomingCall(context, phoneNr);
+                    Log.d(TAG, "onReceive: "+ phoneNr);
                     break;
                 }
                 case TelephonyManager.CALL_STATE_IDLE: {

@@ -274,6 +274,7 @@ public class DataProvider extends ContentProvider {
     }
 
 
+
     @Override
     public void shutdown() {
         mDBHelper.close();

@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         Utility.firstLaunchPreparations(this);
 
+        fab.setImageResource(Utility.isDistinctiveRingEnabled(this)?R.drawable.ic_volume_up_white:R.drawable.ic_volume_off_white);
+
     }
 
     //process click
@@ -49,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
 
             Utility.setDistinctiveRingEnabled(this,false);
             fab.setImageResource(R.drawable.ic_volume_off_white);
-            Toast.makeText(this, PhoneNumberUtils.formatNumber("123456","UA"),Toast.LENGTH_SHORT).show();
+
         }else{
             Utility.setDistinctiveRingEnabled(this,true);
             fab.setImageResource(R.drawable.ic_volume_up_white);
-            Toast.makeText(this,PhoneNumberUtils.formatNumber("380675721286","UA"),Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_about:{
                 Toast.makeText(this,getString(R.string.action_main_about_title),Toast.LENGTH_SHORT).show();
+                //                TODO code about dialog
             }
         }
         return super.onOptionsItemSelected(item);

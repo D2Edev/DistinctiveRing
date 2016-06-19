@@ -13,9 +13,11 @@ import android.widget.Toast;
 import io.github.d2edev.distinctivering.R;
 
 public class DeleteContactActivity extends AppCompatActivity {
-    public static final String TAG="TAG_MainFabActivity";
+    public static final String TAG = "TAG_MainFabActivity";
 
     private FloatingActionButton fab;
+    private DeleteFragment df;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,37 +27,34 @@ public class DeleteContactActivity extends AppCompatActivity {
 
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteSelectedrecords();
 
-            }
-        });
 
 
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.delete_fragment_container,new DeleteFragment(), DeleteFragment.TAG).commit();
-getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        df = new DeleteFragment();
+        fm.beginTransaction().add(R.id.delete_fragment_container, df, DeleteFragment.TAG).commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        fab.setOnClickListener(df);
 
     }
 
-    private void deleteSelectedrecords() {
 
-    }
 
+    //TODO code ActiviyResult
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity,menu);
+        getMenuInflater().inflate(R.menu.main_activity, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_about:{
-                Toast.makeText(this,getString(R.string.action_main_about_title),Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case R.id.action_about: {
+                Toast.makeText(this, getString(R.string.action_main_about_title), Toast.LENGTH_SHORT).show();
+//                TODO code about dialog
             }
         }
         return super.onOptionsItemSelected(item);

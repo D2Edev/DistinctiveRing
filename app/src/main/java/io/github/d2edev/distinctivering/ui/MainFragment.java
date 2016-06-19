@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
@@ -39,6 +40,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private TextView lHeaderSortOrder;
     private int sortTypeIndex;
     private boolean sortAsc;
+    private  boolean hasRecords;
     private NameNumPicListAdapter nameNumPicListAdapter;
 
 
@@ -139,10 +141,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_main_add_item: {
+                //TODO process add from contact book
                 break;
             }
             case R.id.action_main_delete_item: {
+                if(hasRecords){
                 startDeleteActivity();
+
+                }else{
+                    Toast.makeText(getActivity(),getString(R.string.no_records),Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
             case R.id.action_main_add_item_manual: {
@@ -150,6 +158,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             }
             case R.id.action_help: {
+                //TODO code help screen
                 break;
             }
         }
@@ -179,6 +188,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         nameNumPicListAdapter.swapCursor(cursor);
+        hasRecords=cursor.getCount()>0?true:false;
 
     }
 
@@ -208,6 +218,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //TODO process result data
     }
+
+
 }

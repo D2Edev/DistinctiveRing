@@ -2,9 +2,9 @@ package io.github.d2edev.distinctivering.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import io.github.d2edev.distinctivering.R;
@@ -27,7 +29,7 @@ public class NameNumPicListAdapter extends CursorAdapter{
     //FirstName+SecondName if true, SecondName+FirstName otherwise
     private boolean mNameNativeOrder=true;
 
-
+    private List<Integer> selectedNumIDs =new LinkedList<>();
 
 
     public NameNumPicListAdapter(Context context, Cursor c, int flags) {
@@ -42,7 +44,9 @@ public class NameNumPicListAdapter extends CursorAdapter{
         return  view;
     }
 
-
+    public List<Integer> getSelectedNumIDs() {
+        return selectedNumIDs;
+    }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
@@ -50,8 +54,13 @@ public class NameNumPicListAdapter extends CursorAdapter{
         //Cursor should contain following columns in following order
         //FistName,SecondName,PicPath,Number
         String name="";
-        Log.d(TAG, "bindView: cursor " + cursor.getString(0) +" " +cursor.getString(1)+ " "
-                + cursor.getString(2)+ " " + cursor.getString(3) );
+//        Log.d(TAG, "bindView: cursor " + cursor.getString(0) +" " +cursor.getString(1)+ " "
+//                + cursor.getString(2)+ " " + cursor.getString(3) );
+        if(selectedNumIDs.contains(new Integer(cursor.getInt(5)))){
+            view.setBackgroundColor(Color.parseColor(context.getString(R.color.my_accent_light)));
+        }else{
+            view.setBackgroundColor(Color.TRANSPARENT);
+        }
         if (mNameNativeOrder){
             name=cursor.getString(0)+" "+ cursor.getString(1);
         }else{
@@ -65,6 +74,7 @@ public class NameNumPicListAdapter extends CursorAdapter{
             viewHolder.tvNumber.setText("+"+PhoneNumberUtils.formatNumber(cursor.getString(3)));
         }
         Utility.setImage(viewHolder.ivUserPic,cursor.getString(2),R.drawable.ic_person_green);
+
 
     }
 
@@ -89,4 +99,12 @@ public class NameNumPicListAdapter extends CursorAdapter{
     public void setNameNativeOrder(boolean mNameNativeOrder) {
         this.mNameNativeOrder = mNameNativeOrder;
     }
+
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        return super.swapCursor(newCursor);
+    }
+
+
+
 }
