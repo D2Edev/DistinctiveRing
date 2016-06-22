@@ -6,6 +6,7 @@
     <dimen name="listview_small_margin">8dp</dimen>
     <dimen name="listview_middle_margin">16dp</dimen>
     <dimen name="listview_image_view">48dp</dimen>
+    <dimen name="about_image_view">64dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="giant_margin">64dp</dimen>
 

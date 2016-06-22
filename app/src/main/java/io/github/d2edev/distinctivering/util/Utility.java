@@ -2,9 +2,11 @@ package io.github.d2edev.distinctivering.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneNumberUtils;
@@ -37,6 +39,7 @@ public class Utility {
     public static final int SORT_BY_FIRST_NAME = 0;
     public static final int SORT_BY_LAST_NAME = 1;
     public static final int SORT_BY_NUMBER = 2;
+    public static final String KEY_RINGER_MODE = "key_ringer_mode";
 
     /**
      * Helper method to set needed ring status in shared preferences
@@ -95,7 +98,7 @@ public class Utility {
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
-                Log.d(TAG, "isNUmberInList: cursor position" + cursor.getPosition());
+//                Log.d(TAG, "isNUmberInList: cursor position" + cursor.getPosition());
                 if (PhoneNumberUtils.compare(cursor.getString(0), number)) {
                     result=true;
                     break;
@@ -176,7 +179,7 @@ public class Utility {
         input.close();
         input = context.getContentResolver().openInputStream(uri);
         bitmap = BitmapFactory.decodeStream(input, null, options);
-        Log.d(TAG, "decodeSampledBitmapFromUri: " + bitmap);
+//        Log.d(TAG, "decodeSampledBitmapFromUri: " + bitmap);
         return bitmap;
     }
 
@@ -217,7 +220,7 @@ public class Utility {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
-        Log.d(TAG, "calculateInSampleSize: h:" + height + " w:" + width);
+//        Log.d(TAG, "calculateInSampleSize: h:" + height + " w:" + width);
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
@@ -232,7 +235,7 @@ public class Utility {
                 inSampleSize *= 2;
             }
         }
-        Log.d(TAG, "calculateInSampleSize: " + inSampleSize);
+//        Log.d(TAG, "calculateInSampleSize: " + inSampleSize);
         return inSampleSize;
     }
 
@@ -327,5 +330,27 @@ public class Utility {
 
     public static int getSortOrderIndex(boolean sortAsc) {
         return sortAsc ? 0 : 1;
+    }
+
+    public static String getAppVersion(Context context){
+
+            String version="undefined";
+            try {
+                version=context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }finally {
+                return  version;
+            }
+        }
+
+    public static void saveRingerModel(Context context, int ringerMode) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt(KEY_RINGER_MODE, ringerMode).apply();
+    }
+
+    public static int getSavedRingerMode(Context context) {
+        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(KEY_RINGER_MODE, AudioManager.RINGER_MODE_VIBRATE);
     }
 }

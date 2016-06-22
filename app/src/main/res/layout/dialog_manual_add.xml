@@ -40,7 +40,8 @@
         android:layout_margin="@dimen/listview_small_margin"
         android:fontFamily="sans-serif-condensed"
         android:hint="@string/dialog_first_name_hint"
-        android:textSize="@dimen/font_20" />
+        android:textSize="@dimen/font_20"
+        />
 
     <EditText
         android:id="@+id/dialog_second_name"

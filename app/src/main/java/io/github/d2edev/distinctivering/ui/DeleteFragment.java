@@ -4,6 +4,7 @@ package io.github.d2edev.distinctivering.ui;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -29,7 +30,7 @@ import io.github.d2edev.distinctivering.logic.DataSetWatcher;
 import io.github.d2edev.distinctivering.util.Utility;
 
 
-public class DeleteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DataSetWatcher, View.OnClickListener {
+public class DeleteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DataSetWatcher{
     public static final String TAG = "TAG_" + DeleteFragment.class.getSimpleName();
     public static final String KEY_SORT_ORDER = "kso";
     public static final int LIST_CURSOR_LOADER = 0;
@@ -41,9 +42,11 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     private int sortTypeIndex;
     private boolean sortAsc;
     private NameNumPicListAdapter nameNumPicListAdapter;
+    private FloatingActionButton fab;
 
 
 //    TODO think about correct deleting persons with no numbers
+//    TODO FAB enable/disable
 
     public DeleteFragment() {
         // Required empty public constructor
@@ -67,7 +70,15 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_delete, container, false);
-        mDeleteListView = (ListView) rootView.findViewById(R.id.listview_numbers_to_delete);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setEnabled(false);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteSelected();
+            }
+        });
+        mDeleteListView = (ListView) rootView.findViewById(R.id.listview);
         ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mDeleteListView, false);
         //header SortBy part init
         lHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
@@ -103,6 +114,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                 } else {
                     nameNumPicListAdapter.getSelectedNumIDs().add(thisID);
                 }
+                fab.setEnabled(!nameNumPicListAdapter.getSelectedNumIDs().isEmpty());
                 nameNumPicListAdapter.notifyDataSetChanged();
 
             }
@@ -202,8 +214,8 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
     }
 
-    @Override
-    public void onClick(View v) {
+
+    public void deleteSelected() {
         NumberDeleteTask numberDeleteTask = new NumberDeleteTask(getActivity(), this);
         Integer[] numIDs = new Integer[]{};
         numIDs= nameNumPicListAdapter.getSelectedNumIDs().toArray(numIDs);

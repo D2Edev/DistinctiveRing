@@ -172,7 +172,6 @@ public class ManualAddDialogFragment extends DialogFragment {
                     bNumberOK = false;
                 }
                 checkOkButton();
-                checkOkButton();
             }
 
             @Override

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -33,6 +34,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final String KEY_SORT_ORDER = "kso";
     public static final int ALLOWEDLIST_CURSOR_LOADER = 0;
     public static final int REQ_CODE_DELETE=0;
+    private FloatingActionButton fab;
     private String[] sortBy;
     private String[] sortOrder;
     private ListView mListView;
@@ -59,6 +61,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         sortAsc = Utility.isSortOrderAscending(getActivity());
 
 
+
     }
 
     @Override
@@ -66,7 +69,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mListView = (ListView) rootView.findViewById(R.id.listview_allowed_numbers);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeDistinctiveRingSettings();
+
+            }
+        });
+        fab.setImageResource(Utility.isDistinctiveRingEnabled(getActivity())?R.drawable.ic_volume_up_white:R.drawable.ic_volume_off_white);
+        mListView = (ListView) rootView.findViewById(R.id.listview);
         ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mListView, false);
         //header SortBy part init
         lHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
@@ -95,6 +107,21 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mListView.setAdapter(nameNumPicListAdapter);
 
         return rootView;
+    }
+
+
+    //process click
+    private void changeDistinctiveRingSettings() {
+        if(Utility.isDistinctiveRingEnabled(getActivity())){
+
+            Utility.setDistinctiveRingEnabled(getActivity(),false);
+            fab.setImageResource(R.drawable.ic_volume_off_white);
+
+        }else{
+            Utility.setDistinctiveRingEnabled(getActivity(),true);
+            fab.setImageResource(R.drawable.ic_volume_up_white);
+
+        }
     }
 
     @Override

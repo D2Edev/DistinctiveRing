@@ -23,4 +23,7 @@
     <string name="sort_desc">Desc</string>
     <string name="delete_acticity_label">Delete record(s)</string>
     <string name="no_records">No records!</string>
+    <string name="add_activity_label">Add from Contacts</string>
+    <string name="about_main_text">d2e DEVELOPMENT &#169;2016\nSmall application which enables ringing during calls from selected persons despite current volume profile. Click below to visit us:</string>
+    <string name="about_web_address">d2edev.github.io</string>
 </resources>

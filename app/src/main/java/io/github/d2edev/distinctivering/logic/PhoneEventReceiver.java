@@ -12,7 +12,7 @@ import android.util.Log;
  */
 
 public class PhoneEventReceiver extends BroadcastReceiver {
-    public static final String TAG="TAG_"+PhoneEventReceiver.class.getSimpleName();
+    public static final String TAG = "TAG_" + PhoneEventReceiver.class.getSimpleName();
 
     private IncomingCallListener incomingCallListener;
 
@@ -23,23 +23,20 @@ public class PhoneEventReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
-                ||intent.hasExtra(TelephonyManager.EXTRA_STATE_IDLE)){
-            String phoneNr = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
-            switch (tm.getCallState()) {
-                case TelephonyManager.CALL_STATE_RINGING: {
-                    incomingCallListener.onIncomingCall(context, phoneNr);
-                    Log.d(TAG, "onReceive: "+ phoneNr);
-                    break;
-                }
-                case TelephonyManager.CALL_STATE_IDLE: {
-                    incomingCallListener.onCallEnded(context);
-                    break;
-                }
+
+        String phoneNr = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
+        switch (tm.getCallState()) {
+            case TelephonyManager.CALL_STATE_RINGING: {
+                incomingCallListener.onIncomingCall(context, phoneNr);
+                break;
+            }
+            case TelephonyManager.CALL_STATE_IDLE: {
+                incomingCallListener.onCallEnded(context);
+                break;
             }
         }
-
-
     }
+
+
 }
