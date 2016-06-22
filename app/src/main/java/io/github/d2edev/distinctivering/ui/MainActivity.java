@@ -9,6 +9,7 @@ import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.R;
@@ -16,7 +17,7 @@ import io.github.d2edev.distinctivering.util.Utility;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG="TAG_"+MainActivity.class.getSimpleName();
-    
+
 
 
     private FloatingActionButton fab;
@@ -39,12 +40,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.main_fragment_container,new MainFragment(), MainFragment.TAG).commit();
+        fm.beginTransaction().add(R.id.fragment_container,new MainFragment(), MainFragment.TAG).commit();
 
         Utility.firstLaunchPreparations(this);
 
         fab.setImageResource(Utility.isDistinctiveRingEnabled(this)?R.drawable.ic_volume_up_white:R.drawable.ic_volume_off_white);
 
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
     //process click

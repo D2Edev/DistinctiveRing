@@ -66,6 +66,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_delete, container, false);
         mDeleteListView = (ListView) rootView.findViewById(R.id.listview_numbers_to_delete);
         ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mDeleteListView, false);
@@ -88,7 +89,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                 headerSortOrderClicked();
             }
         });
-        nameNumPicListAdapter = new NameNumPicListAdapter(getContext(), null, 0);
+        nameNumPicListAdapter = new NameNumPicListAdapter(getActivity(), null, 0);
         mDeleteListView.setAdapter(nameNumPicListAdapter);
         mDeleteListView.addHeaderView(headerView);
         mDeleteListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -187,7 +188,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onPause() {
         Utility.setSortTypeIndex(getActivity(), sortTypeIndex);
-        Utility.setSortOrderAscending(getContext(), sortAsc);
+        Utility.setSortOrderAscending(getActivity(), sortAsc);
         super.onPause();
     }
 

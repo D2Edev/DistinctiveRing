@@ -35,6 +35,7 @@ public class PhoneEventReceiver extends BroadcastReceiver {
                 }
                 case TelephonyManager.CALL_STATE_IDLE: {
                     incomingCallListener.onCallEnded(context);
+
                     break;
                 }
             }

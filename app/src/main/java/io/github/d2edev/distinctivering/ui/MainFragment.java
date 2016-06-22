@@ -91,7 +91,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mListView.addHeaderView(headerView);
 
 
-        nameNumPicListAdapter = new NameNumPicListAdapter(getContext(), null, 0);
+        nameNumPicListAdapter = new NameNumPicListAdapter(getActivity(), null, 0);
         mListView.setAdapter(nameNumPicListAdapter);
 
         return rootView;
@@ -200,7 +200,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onPause() {
         Utility.setSortTypeIndex(getActivity(), sortTypeIndex);
-        Utility.setSortOrderAscending(getContext(), sortAsc);
+        Utility.setSortOrderAscending(getActivity(), sortAsc);
         super.onPause();
     }
 
