@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,30 +17,26 @@ import android.widget.TextView;
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.util.Utility;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG="TAG_"+MainActivity.class.getSimpleName();
-    
-
+public class MainActivity extends AppCompatActivity implements BasicActionsListener {
+    public static final String TAG = "TAG_" + MainActivity.class.getSimpleName();
+        private Toolbar mToolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragment_container,new MainFragment(), MainFragment.TAG).commit();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        callMainUI();
         Utility.firstLaunchPreparations(this);
-
 
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.common_activity,menu);
+        getMenuInflater().inflate(R.menu.common_activity, menu);
         return true;
     }
 
@@ -50,23 +47,24 @@ public class MainActivity extends AppCompatActivity {
                 showAboutDialog();
 
             }
-            default:super.onOptionsItemSelected(item);
+            default:
+                super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void showAboutDialog() {
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        View view=getLayoutInflater().inflate(R.layout.about_item,null);
-        TextView header= (TextView) view.findViewById(R.id.about_header);
-        header.setText(getString(R.string.app_name)+" v."+Utility.getAppVersion(this));
-        TextView linkText= (TextView) view.findViewById(R.id.about_link);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.about_item, null);
+        TextView header = (TextView) view.findViewById(R.id.about_header);
+        header.setText(getString(R.string.app_name) + " v." + Utility.getAppVersion(this));
+        TextView linkText = (TextView) view.findViewById(R.id.about_link);
         linkText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent viewPage=new Intent(Intent.ACTION_VIEW);
-                viewPage.setData(Uri.parse("http://"+getString(R.string.about_web_address)));
+                Intent viewPage = new Intent(Intent.ACTION_VIEW);
+                viewPage.setData(Uri.parse("http://" + getString(R.string.about_web_address)));
                 startActivity(viewPage);
             }
         });
@@ -80,6 +78,50 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
+    }
+
+
+
+    @Override
+    public void callDeleteUI() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        DeleteFragment df = new DeleteFragment();
+        df.setBasicActionsListener(this);
+        transaction.replace(R.id.fragment_container, df, DeleteFragment.TAG);
+        transaction.addToBackStack(DeleteFragment.TAG);
+        transaction.commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    public void callAddUI() {
+
+    }
+
+    @Override
+    public void callMainUI() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        MainFragment mf = new MainFragment();
+        mf.setBasicActionsListener(this);
+        transaction.replace(R.id.fragment_container, mf, MainFragment.TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount()>0){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        mToolbar.setNavigationOnClickListener(null);
+        }
+        super.onBackPressed();
     }
 }
 

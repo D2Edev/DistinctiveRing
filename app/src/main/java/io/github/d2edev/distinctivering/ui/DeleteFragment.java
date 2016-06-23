@@ -34,15 +34,16 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     public static final String TAG = "TAG_" + DeleteFragment.class.getSimpleName();
     public static final String KEY_SORT_ORDER = "kso";
     public static final int LIST_CURSOR_LOADER = 0;
-    private String[] sortBy;
-    private String[] sortOrder;
-    private ListView mDeleteListView;
-    private TextView lHeaderTextSortBy;
-    private TextView lHeaderSortOrder;
-    private int sortTypeIndex;
-    private boolean sortAsc;
-    private NameNumPicListAdapter nameNumPicListAdapter;
-    private FloatingActionButton fab;
+    private String[] mSortBy;
+    private String[] mSortOrder;
+    private ListView mListView;
+    private TextView mHeaderTextSortBy;
+    private TextView mHeaderSortOrder;
+    private int mSortTypeIndex;
+    private boolean mSortAsc;
+    private NameNumPicListAdapter mAdapter;
+    private FloatingActionButton mFab;
+    private BasicActionsListener mBasicActionsListener;
 
 
 //    TODO think about correct deleting persons with no numbers
@@ -57,10 +58,10 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        sortBy = getResources().getStringArray(R.array.sortBy);
-        sortOrder = getResources().getStringArray(R.array.sortOrder);
-        sortTypeIndex = Utility.getSortTypeIndex(getActivity());
-        sortAsc = Utility.isSortOrderAscending(getActivity());
+        mSortBy = getResources().getStringArray(R.array.sortBy);
+        mSortOrder = getResources().getStringArray(R.array.sortOrder);
+        mSortTypeIndex = Utility.getSortTypeIndex(getActivity());
+        mSortAsc = Utility.isSortOrderAscending(getActivity());
 
 
     }
@@ -70,20 +71,20 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_delete, container, false);
-        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setEnabled(false);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        mFab.setEnabled(false);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deleteSelected();
             }
         });
-        mDeleteListView = (ListView) rootView.findViewById(R.id.listview);
-        ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mDeleteListView, false);
+        mListView = (ListView) rootView.findViewById(R.id.listview);
+        ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mListView, false);
         //header SortBy part init
-        lHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
-        lHeaderTextSortBy.setText(sortBy[sortTypeIndex]);
-        lHeaderTextSortBy.setOnClickListener(new View.OnClickListener() {
+        mHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
+        mHeaderTextSortBy.setText(mSortBy[mSortTypeIndex]);
+        mHeaderTextSortBy.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -91,31 +92,31 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
         //header soerOrder part init
-        lHeaderSortOrder = (TextView) headerView.findViewById(R.id.header_text_sort_order);
-        lHeaderSortOrder.setText(sortOrder[Utility.getSortOrderIndex(sortAsc)]);
-        lHeaderSortOrder.setOnClickListener(new View.OnClickListener() {
+        mHeaderSortOrder = (TextView) headerView.findViewById(R.id.header_text_sort_order);
+        mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
+        mHeaderSortOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 headerSortOrderClicked();
             }
         });
-        nameNumPicListAdapter = new NameNumPicListAdapter(getContext(), null, 0);
-        mDeleteListView.setAdapter(nameNumPicListAdapter);
-        mDeleteListView.addHeaderView(headerView);
-        mDeleteListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        mDeleteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAdapter = new NameNumPicListAdapter(getContext(), null, 0);
+        mListView.setAdapter(mAdapter);
+        mListView.addHeaderView(headerView);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = nameNumPicListAdapter.getCursor();
+                Cursor cursor = mAdapter.getCursor();
                 cursor.moveToPosition(position - 1);
                 Integer thisID = new Integer(cursor.getInt(5));
-                if (nameNumPicListAdapter.getSelectedNumIDs().contains(thisID)) {
-                    nameNumPicListAdapter.getSelectedNumIDs().remove(thisID);
+                if (mAdapter.getSelectedNumIDs().contains(thisID)) {
+                    mAdapter.getSelectedNumIDs().remove(thisID);
                 } else {
-                    nameNumPicListAdapter.getSelectedNumIDs().add(thisID);
+                    mAdapter.getSelectedNumIDs().add(thisID);
                 }
-                fab.setEnabled(!nameNumPicListAdapter.getSelectedNumIDs().isEmpty());
-                nameNumPicListAdapter.notifyDataSetChanged();
+                mFab.setEnabled(!mAdapter.getSelectedNumIDs().isEmpty());
+                mAdapter.notifyDataSetChanged();
 
             }
         });
@@ -131,24 +132,24 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void headerSortOrderClicked() {
-        sortAsc = sortAsc ? false : true;
-        lHeaderSortOrder.setText(sortOrder[Utility.getSortOrderIndex(sortAsc)]);
+        mSortAsc = mSortAsc ? false : true;
+        mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
         rebuildList();
 
     }
 
     private void headerSortByClicked() {
-        if (sortTypeIndex == 2) {
-            sortTypeIndex = 0;
+        if (mSortTypeIndex == 2) {
+            mSortTypeIndex = 0;
         } else {
-            sortTypeIndex++;
+            mSortTypeIndex++;
         }
-        lHeaderTextSortBy.setText(sortBy[sortTypeIndex]);
+        mHeaderTextSortBy.setText(mSortBy[mSortTypeIndex]);
         rebuildList();
     }
 
     private void rebuildList() {
-        String sortOrder = Utility.getSortColumnName(sortTypeIndex) + (sortAsc ? " ASC" : " DESC");
+        String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
         Bundle bundle = new Bundle();
         bundle.putString(KEY_SORT_ORDER, sortOrder);
         if (getLoaderManager().getLoader(LIST_CURSOR_LOADER) != null)
@@ -187,19 +188,19 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        nameNumPicListAdapter.swapCursor(cursor);
+        mAdapter.swapCursor(cursor);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        nameNumPicListAdapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 
     @Override
     public void onPause() {
-        Utility.setSortTypeIndex(getActivity(), sortTypeIndex);
-        Utility.setSortOrderAscending(getContext(), sortAsc);
+        Utility.setSortTypeIndex(getActivity(), mSortTypeIndex);
+        Utility.setSortOrderAscending(getContext(), mSortAsc);
         super.onPause();
     }
 
@@ -207,7 +208,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void dataSetChanged() {
         Log.d(TAG, "dataSetChanged: ");
-        String sortOrder = Utility.getSortColumnName(sortTypeIndex) + (sortAsc ? " ASC" : " DESC");
+        String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
         Bundle bundle = new Bundle();
         bundle.putString(KEY_SORT_ORDER, sortOrder);
         getLoaderManager().restartLoader(LIST_CURSOR_LOADER, bundle, this);
@@ -218,8 +219,12 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     public void deleteSelected() {
         NumberDeleteTask numberDeleteTask = new NumberDeleteTask(getActivity(), this);
         Integer[] numIDs = new Integer[]{};
-        numIDs= nameNumPicListAdapter.getSelectedNumIDs().toArray(numIDs);
-        Log.d(TAG, "onClick: "+ Arrays.toString(numIDs)+ " " + nameNumPicListAdapter.getSelectedNumIDs());
+        numIDs= mAdapter.getSelectedNumIDs().toArray(numIDs);
+        Log.d(TAG, "onClick: "+ Arrays.toString(numIDs)+ " " + mAdapter.getSelectedNumIDs());
         numberDeleteTask.execute(numIDs);
+    }
+
+    public void setBasicActionsListener(BasicActionsListener basicActionsListener) {
+        mBasicActionsListener = basicActionsListener;
     }
 }

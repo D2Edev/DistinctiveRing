@@ -1,7 +1,6 @@
 package io.github.d2edev.distinctivering.ui;
 
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,18 +33,22 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final String TAG = "TAG_" + MainFragment.class.getSimpleName();
     public static final String KEY_SORT_ORDER = "kso";
     public static final int ALLOWEDLIST_CURSOR_LOADER = 0;
-    public static final int REQ_CODE_DELETE=0;
-    private FloatingActionButton fab;
-    private String[] sortBy;
-    private String[] sortOrder;
+    private FloatingActionButton mFab;
+    private String[] mSortBy;
+    private String[] mSortOrder;
     private ListView mListView;
-    private TextView lHeaderTextSortBy;
-    private TextView lHeaderSortOrder;
-    private int sortTypeIndex;
-    private boolean sortAsc;
-    private  boolean hasRecords;
-    private NameNumPicListAdapter nameNumPicListAdapter;
+    private TextView mHeaderTextSortBy;
+    private TextView mHeaderSortOrder;
+    private int mSortTypeIndex;
+    private boolean mSortAsc;
+    private  boolean mHasRecords;
+    private NameNumPicListAdapter mAdapter;
+    private BasicActionsListener basicActionsListener;
 
+
+    public void setBasicActionsListener(BasicActionsListener basicActionsListener) {
+        this.basicActionsListener = basicActionsListener;
+    }
 
     public MainFragment() {
         // Required empty public constructor
@@ -55,10 +59,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        sortBy = getResources().getStringArray(R.array.sortBy);
-        sortOrder = getResources().getStringArray(R.array.sortOrder);
-        sortTypeIndex = Utility.getSortTypeIndex(getActivity());
-        sortAsc = Utility.isSortOrderAscending(getActivity());
+        mSortBy = getResources().getStringArray(R.array.sortBy);
+        mSortOrder = getResources().getStringArray(R.array.sortOrder);
+        mSortTypeIndex = Utility.getSortTypeIndex(getActivity());
+        mSortAsc = Utility.isSortOrderAscending(getActivity());
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 
 
@@ -69,21 +74,21 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeDistinctiveRingSettings();
 
             }
         });
-        fab.setImageResource(Utility.isDistinctiveRingEnabled(getActivity())?R.drawable.ic_volume_up_white:R.drawable.ic_volume_off_white);
+        mFab.setImageResource(Utility.isDistinctiveRingEnabled(getActivity())?R.drawable.ic_volume_up_white:R.drawable.ic_volume_off_white);
         mListView = (ListView) rootView.findViewById(R.id.listview);
         ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mListView, false);
         //header SortBy part init
-        lHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
-        lHeaderTextSortBy.setText(sortBy[sortTypeIndex]);
-        lHeaderTextSortBy.setOnClickListener(new View.OnClickListener() {
+        mHeaderTextSortBy = (TextView) headerView.findViewById(R.id.header_text_sort_by);
+        mHeaderTextSortBy.setText(mSortBy[mSortTypeIndex]);
+        mHeaderTextSortBy.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -91,9 +96,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         });
         //header soerOrder part init
-        lHeaderSortOrder = (TextView) headerView.findViewById(R.id.header_text_sort_order);
-        lHeaderSortOrder.setText(sortOrder[Utility.getSortOrderIndex(sortAsc)]);
-        lHeaderSortOrder.setOnClickListener(new View.OnClickListener() {
+        mHeaderSortOrder = (TextView) headerView.findViewById(R.id.header_text_sort_order);
+        mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
+        mHeaderSortOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 headerSortOrderClicked();
@@ -103,8 +108,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mListView.addHeaderView(headerView);
 
 
-        nameNumPicListAdapter = new NameNumPicListAdapter(getContext(), null, 0);
-        mListView.setAdapter(nameNumPicListAdapter);
+        mAdapter = new NameNumPicListAdapter(getContext(), null, 0);
+        mListView.setAdapter(mAdapter);
 
         return rootView;
     }
@@ -115,11 +120,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if(Utility.isDistinctiveRingEnabled(getActivity())){
 
             Utility.setDistinctiveRingEnabled(getActivity(),false);
-            fab.setImageResource(R.drawable.ic_volume_off_white);
+            mFab.setImageResource(R.drawable.ic_volume_off_white);
 
         }else{
             Utility.setDistinctiveRingEnabled(getActivity(),true);
-            fab.setImageResource(R.drawable.ic_volume_up_white);
+            mFab.setImageResource(R.drawable.ic_volume_up_white);
 
         }
     }
@@ -132,26 +137,26 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void headerSortOrderClicked() {
         Log.d(TAG, "order clicked");
-        sortAsc = sortAsc ? false : true;
-        lHeaderSortOrder.setText(sortOrder[Utility.getSortOrderIndex(sortAsc)]);
+        mSortAsc = mSortAsc ? false : true;
+        mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
         rebuildList();
 
     }
 
     private void headerSortByClicked() {
-        if (sortTypeIndex == 2) {
-            sortTypeIndex = 0;
+        if (mSortTypeIndex == 2) {
+            mSortTypeIndex = 0;
         } else {
-            sortTypeIndex++;
+            mSortTypeIndex++;
         }
-        Log.d(TAG, "criteria clicked " + sortTypeIndex);
-        lHeaderTextSortBy.setText(sortBy[sortTypeIndex]);
+        Log.d(TAG, "criteria clicked " + mSortTypeIndex);
+        mHeaderTextSortBy.setText(mSortBy[mSortTypeIndex]);
         rebuildList();
     }
 
     private void rebuildList() {
-        String sortOrder = Utility.getSortColumnName(sortTypeIndex) + (sortAsc?" ASC":" DESC");
-        nameNumPicListAdapter.setNameNativeOrder(sortTypeIndex== Utility.SORT_BY_LAST_NAME?false:true);
+        String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ?" ASC":" DESC");
+        mAdapter.setNameNativeOrder(mSortTypeIndex == Utility.SORT_BY_LAST_NAME?false:true);
         Bundle bundle=new Bundle();
         bundle.putString(KEY_SORT_ORDER,sortOrder);
         if(getLoaderManager().getLoader(ALLOWEDLIST_CURSOR_LOADER)!=null) getLoaderManager().destroyLoader(ALLOWEDLIST_CURSOR_LOADER);
@@ -172,8 +177,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             }
             case R.id.action_main_delete_item: {
-                if(hasRecords){
-                startDeleteActivity();
+                if(mHasRecords){
+                    if(basicActionsListener!=null)basicActionsListener.callDeleteUI();
 
                 }else{
                     Toast.makeText(getActivity(),getString(R.string.no_records),Toast.LENGTH_SHORT).show();
@@ -192,10 +197,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         return super.onOptionsItemSelected(item);
     }
 
-    private void startDeleteActivity() {
-        Intent startIntent = new Intent(getActivity(),DeleteContactActivity.class);
-        startActivityForResult(startIntent,REQ_CODE_DELETE);
-    }
 
 
     private void showManualAddDialog() {
@@ -214,20 +215,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        nameNumPicListAdapter.swapCursor(cursor);
-        hasRecords=cursor.getCount()>0?true:false;
+        mAdapter.swapCursor(cursor);
+        mHasRecords =cursor.getCount()>0?true:false;
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        nameNumPicListAdapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 
     @Override
     public void onPause() {
-        Utility.setSortTypeIndex(getActivity(), sortTypeIndex);
-        Utility.setSortOrderAscending(getContext(), sortAsc);
+        Utility.setSortTypeIndex(getActivity(), mSortTypeIndex);
+        Utility.setSortOrderAscending(getContext(), mSortAsc);
         super.onPause();
     }
 
@@ -235,17 +236,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void dataSetChanged() {
         Log.d(TAG, "dataSetChanged: ");
-        String sortOrder = Utility.getSortColumnName(sortTypeIndex) + (sortAsc?" ASC":" DESC");
+        String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ?" ASC":" DESC");
         Bundle bundle=new Bundle();
         bundle.putString(KEY_SORT_ORDER,sortOrder);
         getLoaderManager().restartLoader(ALLOWEDLIST_CURSOR_LOADER, bundle, this);
         
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
 
 }
