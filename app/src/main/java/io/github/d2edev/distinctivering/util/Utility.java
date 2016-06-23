@@ -114,7 +114,7 @@ public class Utility {
 
     /**
      * Helper method called once to make preparations:
-     * create dir to store user pics, put there defult user pic
+     * create dir to store user pics, put there default user pic
      *
      * @param context Context from which method is called
      */
@@ -242,8 +242,6 @@ public class Utility {
 
     /**
      * Helper method to store provided bitmap to provided file path as PNG format
-     * dimension mathch to requested numbers
-     *
      * @param bitmapImage Bitmap which caontains image
      * @param fileName    String which contains path to file to be saved, incl filename and extension
      * @return true is save is ok, otherwise false
@@ -278,8 +276,6 @@ public class Utility {
      * 0=BY FIRST NAME
      * 1=BY SECOND NAME
      * 2=BY NUMBER
-     * dimension mathch to requested numbers
-     *
      * @param context Context from which method is called
      * @return int as index
      */
@@ -301,8 +297,6 @@ public class Utility {
      * 0=BY FIRST NAME
      * 1=BY SECOND NAME
      * 2=BY NUMBER
-     * dimension mathch to requested numbers
-     *
      * @param sortIndex int sort type index for allowed number list
      * @return String column name to sort on
      */

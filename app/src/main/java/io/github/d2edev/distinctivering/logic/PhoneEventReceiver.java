@@ -11,12 +11,16 @@ import android.util.Log;
  * Created by d2e on 10.06.16.
  */
 
+
+//receiver is subscribed to PHONE_STATE broadcasts in Manifest
 public class PhoneEventReceiver extends BroadcastReceiver {
     public static final String TAG = "TAG_" + PhoneEventReceiver.class.getSimpleName();
 
     private IncomingCallListener incomingCallListener;
 
     PhoneEventReceiver() {
+    //on class init we  connect to interface
+
         incomingCallListener = EventProcessor.getInstance();
     }
 
@@ -24,11 +28,16 @@ public class PhoneEventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String phoneNr = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        //on bcast receive we get instatnce of Tel Manager
+        //and check call state
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
         switch (tm.getCallState()) {
             case TelephonyManager.CALL_STATE_RINGING: {
-                incomingCallListener.onIncomingCall(context, phoneNr);
+                //in case of incoming call we check what's the incoming number
+                //and if it makes sense - pass it to Event Processor through interface
+                String phoneNr = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                if(phoneNr!=null&&!phoneNr.equals("")){
+                incomingCallListener.onIncomingCall(context, phoneNr);}
                 break;
             }
             case TelephonyManager.CALL_STATE_IDLE: {
