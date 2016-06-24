@@ -13,6 +13,8 @@ import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -167,20 +169,36 @@ public class Utility {
      * @return sampled Bitmap or null
      */
 
-    public static Bitmap decodeSampledBitmapFromUri(Uri uri, Context context, int reqWidth, int reqHeight) throws IOException {
+    public static Bitmap decodeSampledBitmapFromUri(Uri uri, Context context, int reqWidth, int reqHeight) {
         Bitmap bitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         InputStream input = null;
-        input = context.getContentResolver().openInputStream(uri);
-        bitmap = BitmapFactory.decodeStream(input, null, options);
-        options.inSampleSize = Utility.calculateInSampleSize(options, reqWidth, reqHeight);
-        options.inJustDecodeBounds = false;
-        input.close();
-        input = context.getContentResolver().openInputStream(uri);
-        bitmap = BitmapFactory.decodeStream(input, null, options);
-//        Log.d(TAG, "decodeSampledBitmapFromUri: " + bitmap);
+        byte []imageArray=null;
+
+        try {
+            input = context.getContentResolver().openInputStream(uri);
+            imageArray = inputStreamToByteArray(input);
+            if (imageArray != null && imageArray.length > 0) {
+                bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
+                options.inSampleSize = Utility.calculateInSampleSize(options, reqWidth, reqHeight);
+                options.inJustDecodeBounds = false;
+                bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            if(input!=null){
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         return bitmap;
+        }
+
+
     }
 
     /**
@@ -346,5 +364,25 @@ public class Utility {
     public static int getSavedRingerMode(Context context) {
         SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(KEY_RINGER_MODE, AudioManager.RINGER_MODE_VIBRATE);
+    }
+
+    public static byte[] inputStreamToByteArray(InputStream is){
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] byteArray=null;
+        byte[] data = new byte[512];
+        try {
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+        buffer.flush();
+            byteArray = buffer.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            return byteArray;
+        }
+
     }
 }

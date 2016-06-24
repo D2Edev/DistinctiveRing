@@ -201,21 +201,15 @@ public class ManualAddDialogFragment extends DialogFragment {
             case MANUAL_PIC_SELECTION: {
                 //and it's ok
                 if (resultCode == Activity.RESULT_OK) {
-
                     imageUri = resultIntent.getData();
                     Log.d(TAG, "onActivityResult: uri " + imageUri);
-                    try {
-                        //downsample selected bitmap and show it as user pic
-                        picBitmap = Utility.decodeSampledBitmapFromUri(imageUri, getActivity(), 50, 50);
-                        if (picBitmap != null) {
-                            Log.d(TAG, "onActivityResult: got bitmap h; " + picBitmap.getHeight() + " w:" + picBitmap.getWidth());
-                            mUserPic.setImageBitmap(picBitmap);
-                            bShowDefaultPic = false;
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    //downsample selected bitmap and show it as user pic
+                    picBitmap = Utility.decodeSampledBitmapFromUri(imageUri, getActivity(), 50, 50);
+                    if (picBitmap != null) {
+                        Log.d(TAG, "onActivityResult: got bitmap h; " + picBitmap.getHeight() + " w:" + picBitmap.getWidth());
+                        mUserPic.setImageBitmap(picBitmap);
+                        bShowDefaultPic = false;
                     }
-
                 } else {
                     //otherwise do nothing
                     Log.d(TAG, "onActivityResult: cancel");
@@ -223,7 +217,6 @@ public class ManualAddDialogFragment extends DialogFragment {
                 break;
             }
             default: {
-
                 //do nothing
             }
         }

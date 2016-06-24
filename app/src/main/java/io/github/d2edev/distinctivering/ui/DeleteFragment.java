@@ -150,6 +150,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
     private void rebuildList() {
         String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
+        mAdapter.setNameNativeOrder(mSortTypeIndex == Utility.SORT_BY_LAST_NAME?false:true);
         Bundle bundle = new Bundle();
         bundle.putString(KEY_SORT_ORDER, sortOrder);
         if (getLoaderManager().getLoader(LIST_CURSOR_LOADER) != null)
@@ -200,7 +201,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onPause() {
         Utility.setSortTypeIndex(getActivity(), mSortTypeIndex);
-        Utility.setSortOrderAscending(getContext(), mSortAsc);
+        Utility.setSortOrderAscending(getActivity(), mSortAsc);
         super.onPause();
     }
 
