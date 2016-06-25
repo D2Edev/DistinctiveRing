@@ -1,6 +1,5 @@
 package io.github.d2edev.distinctivering.db;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,20 +20,20 @@ import io.github.d2edev.distinctivering.util.Utility;
  */
 
 public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
-    public static final String TAG = "TAG" + ManualAddDataSaveTask.class.getSimpleName();
+    public static final String TAG = "TAG_" + ManualAddDataSaveTask.class.getSimpleName();
     public static final String KEY_FIRST_NAME = "kfm";
     public static final String KEY_LAST_NAME = "klm";
     public static final String KEY_NUMBER = "kn";
     public static final String KEY_IMAGE_URI = "kiu";
-    private Context context;
-    private DataSetWatcher dataSetWatcher;
+    private Context mContext;
+    private DataSetWatcher mDataSetWatcher;
+    private boolean mDataChangeSuccess;
+    private int mAllTaskQty;
+    private int mDoneTaskQty;
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     public ManualAddDataSaveTask(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     @Override
@@ -48,7 +47,28 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
         long idPerson;
         String number;
         Log.d(TAG, "doInBackground: ");
-        for (int i = 0; i < params.length; i++) {
+        mAllTaskQty = params.length;
+        for (int i = 0; i < mAllTaskQty; i++) {
+
+            //first check if number already exists
+            number = params[i].getString(KEY_NUMBER);
+            Uri reqNumUri = DataContract.PhoneNumber.buildPhoneNumberUriByValue(number);
+            Cursor numCursor = mContext.getContentResolver().query(
+                    reqNumUri,
+                    null,
+                    null,
+                    null,
+                    null);
+            Log.d(TAG, "doInBackground: vursor" + numCursor + " " + numCursor.getCount());
+            if (numCursor != null && numCursor.getCount() > 0) {
+                //skip the rest of current cycle as phone number alredy exists
+                //so we won't add record
+                numCursor.close();
+                continue;
+
+            }
+            numCursor.close();
+
 
             idPerson = -1;
             //check if person with provided first and last names already exists
@@ -57,8 +77,9 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
             lastName = params[i].getString(KEY_LAST_NAME);
             selectionArgs = new String[]{firstName, lastName};
 
+
             //query provider using selection
-            Cursor cursor = context.getContentResolver().query(DataContract.Person.CONTENT_URI, null, selection, selectionArgs, null);
+            Cursor cursor = mContext.getContentResolver().query(DataContract.Person.CONTENT_URI, null, selection, selectionArgs, null);
             if (cursor != null && cursor.getCount() > 0) {
                 //if person already exists
                 cursor.moveToFirst();
@@ -69,7 +90,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                 ContentValues personRecord = new ContentValues();
                 personRecord.put(DataContract.Person.COLUMN_FIRST_NAME, firstName);
                 personRecord.put(DataContract.Person.COLUMN_LAST_NAME, lastName);
-                Uri newPersonUri = context.getContentResolver().insert(DataContract.Person.CONTENT_URI, personRecord);
+                Uri newPersonUri = mContext.getContentResolver().insert(DataContract.Person.CONTENT_URI, personRecord);
                 try {
                     //and get ID from saved entity to be ready to save number
                     idPerson = Long.parseLong(DataContract.Person.getPersonIdFromUri(newPersonUri));
@@ -86,7 +107,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                 parcelable = params[i].getParcelable(KEY_IMAGE_URI);
                 if (parcelable != null && parcelable instanceof Bitmap) {
                     bitmap = (Bitmap) parcelable;
-                    String picPath = context.getDir(Utility.PIC_DIR, Context.MODE_PRIVATE).getPath()
+                    String picPath = mContext.getDir(Utility.PIC_DIR, Context.MODE_PRIVATE).getPath()
                             + File.separator
                             + lastName + "_" + firstName + "_" + idPerson + Utility.EXT;
                     //save pic
@@ -96,26 +117,27 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
                     selectionArgs = new String[]{"" + idPerson};
                     ContentValues personRecord = new ContentValues();
                     personRecord.put(DataContract.Person.COLUMN_PIC_PATH, picPath);
-                    context.getContentResolver().update(DataContract.Person.CONTENT_URI, personRecord, selection, selectionArgs);
+                    mContext.getContentResolver().update(DataContract.Person.CONTENT_URI, personRecord, selection, selectionArgs);
                 }
 
                 //prepare and save phone data
-                number = params[i].getString(KEY_NUMBER);
                 ContentValues phoneRecord = new ContentValues();
                 phoneRecord.put(DataContract.PhoneNumber.COLUMN_NUMBER, number);
                 phoneRecord.put(DataContract.PhoneNumber.COLUMN_KEY_PERSON, idPerson);
-                context.getContentResolver().insert(DataContract.PhoneNumber.CONTENT_URI, phoneRecord);
+                mContext.getContentResolver().insert(DataContract.PhoneNumber.CONTENT_URI, phoneRecord);
             }
+            mDoneTaskQty++;
         }
+
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (dataSetWatcher != null) dataSetWatcher.dataSetChanged();
+        if (mDataSetWatcher != null) mDataSetWatcher.dataSetChanged(mAllTaskQty == mDoneTaskQty);
     }
 
-    public void setDataSetWatcher(DataSetWatcher dataSetWatcher) {
-        this.dataSetWatcher = dataSetWatcher;
+    public void setmDataSetWatcher(DataSetWatcher mDataSetWatcher) {
+        this.mDataSetWatcher = mDataSetWatcher;
     }
 }

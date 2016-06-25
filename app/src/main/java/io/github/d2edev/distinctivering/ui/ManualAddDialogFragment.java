@@ -21,8 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.io.IOException;
-
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.db.ManualAddDataSaveTask;
 import io.github.d2edev.distinctivering.logic.DataSetWatcher;
@@ -89,7 +87,7 @@ public class ManualAddDialogFragment extends DialogFragment {
         bundle.putString(ManualAddDataSaveTask.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
         bundle.putParcelable(ManualAddDataSaveTask.KEY_IMAGE_URI, picBitmap);
         ManualAddDataSaveTask task = new ManualAddDataSaveTask(getActivity());
-        task.setDataSetWatcher((DataSetWatcher) getActivity().getSupportFragmentManager().findFragmentByTag(MainFragment.TAG));
+        task.setmDataSetWatcher((DataSetWatcher) getActivity().getSupportFragmentManager().findFragmentByTag(MainFragment.TAG));
         task.execute(bundle);
 
     }

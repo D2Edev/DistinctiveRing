@@ -27,4 +27,7 @@
     <string name="about_main_text">d2e DEVELOPMENT &#169;2016\nSmall application which enables ringing during calls from selected persons despite current volume profile. Click below to visit us:</string>
     <string name="about_web_address">d2edev.github.io</string>
     <string name="action_searchl_title">Search</string>
+    <string name="contacts_add_dialog_title">Entry from Contacts</string>
+    <string name="no_contacts_provider">No contacts app detected.\nInstall any (i.e. standard Google Contacts)\nand try again!</string>
+    <string name="no_data_added">No data added! Pls check if number is alredy on list!</string>
 </resources>

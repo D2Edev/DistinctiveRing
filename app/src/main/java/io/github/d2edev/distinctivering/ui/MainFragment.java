@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -32,8 +31,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
@@ -217,6 +214,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
+        }else{
+            Toast.makeText(getActivity(),getString(R.string.no_contacts_provider),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -257,17 +256,24 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
     @Override
-    public void dataSetChanged() {
-        Log.d(TAG, "dataSetChanged: ");
+    public void dataSetChanged(boolean succes) {
+        Log.d(TAG, "dataSetChanged: " + succes);
+        if (succes){
         String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
         Bundle bundle = new Bundle();
         bundle.putString(KEY_SORT_ORDER, sortOrder);
-        getLoaderManager().restartLoader(ALLOWEDLIST_CURSOR_LOADER, bundle, this);
+        getLoaderManager().restartLoader(ALLOWEDLIST_CURSOR_LOADER, bundle, this);}
+        else{
+            Toast.makeText(getActivity(),getString(R.string.no_data_added),Toast.LENGTH_LONG).show();
+        }
+
 
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //TODO finalize logic to add contact from ContactBook
         if (requestCode == REQUEST_SELECT_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             // Get the URI and query the content provider for the phone number
             Uri contactUri = data.getData();
@@ -289,11 +295,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 String lastName = "";
                 Bitmap contactBitmap = null;
                 number = contactCursor.getString(0);
-                contactBitmap = Utility.decodeSampledBitmapFromUri(Uri.parse(contactCursor.getString(1)), getActivity(), 50, 30);
-                Drawable drawable = null;
-                if (contactBitmap != null) {
-                    drawable = new BitmapDrawable(getResources(), contactBitmap);
-                }
+                String picAddress = contactCursor.getString(1);
                 long contactId = contactCursor.getLong(2);
                 Uri baseContactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
                 Uri dataUri = Uri.withAppendedPath(baseContactUri, ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
@@ -312,11 +314,22 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                if (drawable == null) {
+                if (picAddress == null) {
                     builder.setIcon(R.drawable.ic_person_green);
                 } else {
-                    builder.setIcon(drawable);
+                    contactBitmap = Utility.decodeSampledBitmapFromUri(Uri.parse(picAddress), getActivity(), 50, 30);
+                    Drawable drawable = null;
+                    if (contactBitmap != null) {
+                        drawable = new BitmapDrawable(getResources(), contactBitmap);
+                    }
+                    if (drawable == null) {
+                        builder.setIcon(R.drawable.ic_person_green);
+                    } else {
+                        builder.setIcon(drawable);
+                    }
                 }
+
+
                 builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -331,8 +344,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         .setCancelable(false);
                 builder.create().show();
 
-                // Do something with the phone number
-            contactCursor.close();
+                contactCursor.close();
             }
 
         }

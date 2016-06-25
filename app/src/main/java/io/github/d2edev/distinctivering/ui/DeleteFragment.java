@@ -207,7 +207,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     @Override
-    public void dataSetChanged() {
+    public void dataSetChanged(boolean success) {
         Log.d(TAG, "dataSetChanged: ");
         String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
         Bundle bundle = new Bundle();
