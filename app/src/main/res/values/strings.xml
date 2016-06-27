@@ -30,4 +30,5 @@
     <string name="contacts_add_dialog_title">Entry from Contacts</string>
     <string name="no_contacts_provider">No contacts app detected.\nInstall any (i.e. standard Google Contacts)\nand try again!</string>
     <string name="no_data_added">No data added! Pls check if number is alredy on list!</string>
+    <string name="enabled">Ring enabled</string>
 </resources>

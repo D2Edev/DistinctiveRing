@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 
 /**
  * Created by d2e on 10.06.16.
+ * Defines data structure and URIs for data access
  */
 
 public class DataContract {
@@ -31,11 +32,16 @@ public class DataContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PERSON;
         //defining table name and columns
+        //table name
         public static final String TABLE_NAME="person";
+        //String data, not null
         public static final String COLUMN_FIRST_NAME="first_name";
+        //String data, possibly null
         public static final String COLUMN_LAST_NAME="last_name";
+        //String data, possibly null
         public static final String COLUMN_PIC_PATH="pic_path";
 
+        //builds URI upon provided entry ID
         public static Uri builPersonUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }

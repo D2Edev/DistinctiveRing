@@ -22,15 +22,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.db.ManualAddDataSaveTask;
+import io.github.d2edev.distinctivering.db.EntrySaveTask;
 import io.github.d2edev.distinctivering.logic.DataSetWatcher;
 import io.github.d2edev.distinctivering.util.Utility;
 
 /**
- * Created by d2e on 13.06.16.
+ * Implements adding new entry with name,number, pictutre
+ * manually added or selected from contacts,
+ * does needed check for cases number/name already exist
+ * in db
  */
 
-public class ManualAddDialogFragment extends DialogFragment {
+public class AddDialogFragment extends DialogFragment {
     public static final String TAG = "TAG_ManualAddDialog";
     public static final int MIN_TEXT_LENGTH = 1;
     public static final int MIN_NUM_LENGTH = 10;
@@ -73,7 +76,7 @@ public class ManualAddDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         //if CANCEL clicked just close dialog
                         Log.d(TAG, "onClick: negative");
-                        ManualAddDialogFragment.this.getDialog().cancel();
+                        AddDialogFragment.this.getDialog().cancel();
                     }
                 });
 
@@ -82,11 +85,11 @@ public class ManualAddDialogFragment extends DialogFragment {
 
     private void addEntry() {
         Bundle bundle = new Bundle();
-        bundle.putString(ManualAddDataSaveTask.KEY_FIRST_NAME, String.valueOf(mFirstNameInput.getText()));
-        bundle.putString(ManualAddDataSaveTask.KEY_LAST_NAME, String.valueOf(mLastNameInput.getText()));
-        bundle.putString(ManualAddDataSaveTask.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
-        bundle.putParcelable(ManualAddDataSaveTask.KEY_IMAGE_URI, picBitmap);
-        ManualAddDataSaveTask task = new ManualAddDataSaveTask(getActivity());
+        bundle.putString(EntrySaveTask.KEY_FIRST_NAME, String.valueOf(mFirstNameInput.getText()));
+        bundle.putString(EntrySaveTask.KEY_LAST_NAME, String.valueOf(mLastNameInput.getText()));
+        bundle.putString(EntrySaveTask.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
+        bundle.putParcelable(EntrySaveTask.KEY_IMAGE_URI, picBitmap);
+        EntrySaveTask task = new EntrySaveTask(getActivity());
         task.setmDataSetWatcher((DataSetWatcher) getActivity().getSupportFragmentManager().findFragmentByTag(MainFragment.TAG));
         task.execute(bundle);
 

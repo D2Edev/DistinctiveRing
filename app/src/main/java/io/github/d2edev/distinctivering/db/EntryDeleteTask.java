@@ -10,13 +10,13 @@ import io.github.d2edev.distinctivering.logic.DataSetWatcher;
  * Created by d2e on 19.06.16.
  */
 
-public class NumberDeleteTask extends AsyncTask<Integer, Void, Integer> {
+public class EntryDeleteTask extends AsyncTask<Integer, Void, Integer> {
 
     private Context context;
     private DataSetWatcher dataSetWatcher;
     private int deletedRows;
 
-    public NumberDeleteTask(Context context, DataSetWatcher dataSetWatcher) {
+    public EntryDeleteTask(Context context, DataSetWatcher dataSetWatcher) {
         this.context = context;
         this.dataSetWatcher = dataSetWatcher;
     }

@@ -2,7 +2,10 @@ package io.github.d2edev.distinctivering.ui;
 
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +20,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -44,6 +49,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final String KEY_SORT_ORDER = "kso";
     public static final int ALLOWEDLIST_CURSOR_LOADER = 0;
     public static final int REQUEST_SELECT_PHONE_NUMBER = 101;
+    private static final int REQUEST_SHOW_DR_NOTIFICATION = 201;
+    private static final int DR_ACTIVE_NOTIFY = 301;
     private FloatingActionButton mFab;
     private String[] mSortBy;
     private String[] mSortOrder;
@@ -127,16 +134,44 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     //process click
     private void changeDistinctiveRingSettings() {
+
+        //change mode to opposite to current
+        //if currently enabled
         if (Utility.isDistinctiveRingEnabled(getActivity())) {
-
+            //save "disable" to prefs
             Utility.setDistinctiveRingEnabled(getActivity(), false);
+            //set "off image" to fab
             mFab.setImageResource(R.drawable.ic_volume_off_white);
-
+            //remove notification
+            unsetNotification();
         } else {
+            //vice-versa to above
             Utility.setDistinctiveRingEnabled(getActivity(), true);
             mFab.setImageResource(R.drawable.ic_volume_up_white);
+            setNotificationOn();
 
         }
+    }
+
+    private void unsetNotification() {
+        NotificationManagerCompat.from(getActivity()).cancel(DR_ACTIVE_NOTIFY);
+    }
+
+    private void setNotificationOn() {
+        Intent mainActivityIntent=new Intent(getActivity(),MainActivity.class);
+        PendingIntent notificationIntent=PendingIntent.getActivity(
+                getActivity(),
+                REQUEST_SHOW_DR_NOTIFICATION,
+                mainActivityIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(getActivity())
+                .setSmallIcon(R.drawable.ic_icon_notify)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.enabled))
+                .setContentIntent(notificationIntent);
+        Notification notification=builder.build();
+        notification.flags|= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        NotificationManagerCompat mNotificationManager= NotificationManagerCompat.from(getActivity());
+        mNotificationManager.notify(DR_ACTIVE_NOTIFY,notification);
     }
 
     @Override
@@ -221,8 +256,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
     private void showManualAddDialog() {
-        DialogFragment manualAddDialogFragment = new ManualAddDialogFragment();
-        manualAddDialogFragment.show(getActivity().getSupportFragmentManager(), ManualAddDialogFragment.TAG);
+        DialogFragment manualAddDialogFragment = new AddDialogFragment();
+        manualAddDialogFragment.show(getActivity().getSupportFragmentManager(), AddDialogFragment.TAG);
 
 
     }

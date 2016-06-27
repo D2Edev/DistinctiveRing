@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataDBHelper extends SQLiteOpenHelper{
 
+    //TODO make possible name-only entries (second name skipped)
+
     //should update this on any change on data structure
     public static final int DATABASE_VERSION=1;
 

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
 import io.github.d2edev.distinctivering.db.DataContract;
-import io.github.d2edev.distinctivering.db.NumberDeleteTask;
+import io.github.d2edev.distinctivering.db.EntryDeleteTask;
 import io.github.d2edev.distinctivering.logic.DataSetWatcher;
 import io.github.d2edev.distinctivering.util.Utility;
 
@@ -218,11 +218,11 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     public void deleteSelected() {
-        NumberDeleteTask numberDeleteTask = new NumberDeleteTask(getActivity(), this);
+        EntryDeleteTask entryDeleteTask = new EntryDeleteTask(getActivity(), this);
         Integer[] numIDs = new Integer[]{};
         numIDs= mAdapter.getSelectedNumIDs().toArray(numIDs);
         Log.d(TAG, "onClick: "+ Arrays.toString(numIDs)+ " " + mAdapter.getSelectedNumIDs());
-        numberDeleteTask.execute(numIDs);
+        entryDeleteTask.execute(numIDs);
     }
 
     public void setBasicActionsListener(BasicActionsListener basicActionsListener) {

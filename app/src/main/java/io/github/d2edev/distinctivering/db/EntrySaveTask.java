@@ -19,8 +19,8 @@ import io.github.d2edev.distinctivering.util.Utility;
  * Created by d2e on 17.06.16.
  */
 
-public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
-    public static final String TAG = "TAG_" + ManualAddDataSaveTask.class.getSimpleName();
+public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
+    public static final String TAG = "TAG_" + EntrySaveTask.class.getSimpleName();
     public static final String KEY_FIRST_NAME = "kfm";
     public static final String KEY_LAST_NAME = "klm";
     public static final String KEY_NUMBER = "kn";
@@ -32,7 +32,7 @@ public class ManualAddDataSaveTask extends AsyncTask<Bundle, Void, Void> {
     private int mDoneTaskQty;
 
 
-    public ManualAddDataSaveTask(Context context) {
+    public EntrySaveTask(Context context) {
         this.mContext = context;
     }
 
