@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -21,10 +22,6 @@ import io.github.d2edev.distinctivering.util.Utility;
 
 public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
     public static final String TAG = "TAG_" + EntrySaveTask.class.getSimpleName();
-    public static final String KEY_FIRST_NAME = "kfm";
-    public static final String KEY_LAST_NAME = "klm";
-    public static final String KEY_NUMBER = "kn";
-    public static final String KEY_IMAGE_URI = "kiu";
     private Context mContext;
     private DataSetWatcher mDataSetWatcher;
     private boolean mDataChangeSuccess;
@@ -38,10 +35,10 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
 
     @Override
     protected Void doInBackground(Bundle... params) {
-        String firstName;
-        String lastName;
+        String firstName = null;
+        String lastName = null;
         Parcelable parcelable;
-        String selection = DataContract.Person.COLUMN_FIRST_NAME + "=? AND " + DataContract.Person.COLUMN_LAST_NAME + "=?";
+        String selection = null;
         String[] selectionArgs;
         Bitmap bitmap;
         long idPerson;
@@ -51,7 +48,7 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
         for (int i = 0; i < mAllTaskQty; i++) {
 
             //first check if number already exists
-            number = params[i].getString(KEY_NUMBER);
+            number = params[i].getString(DataContract.KEY_NUMBER);
             Uri reqNumUri = DataContract.PhoneNumber.buildPhoneNumberUriByValue(number);
             Cursor numCursor = mContext.getContentResolver().query(
                     reqNumUri,
@@ -59,27 +56,42 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
                     null,
                     null,
                     null);
-            Log.d(TAG, "doInBackground: vursor" + numCursor + " " + numCursor.getCount());
             if (numCursor != null && numCursor.getCount() > 0) {
-                //skip the rest of current cycle as phone number alredy exists
+                //skip the rest of current cycle as phone number already exists
                 //so we won't add record
                 numCursor.close();
                 continue;
 
             }
             numCursor.close();
-
-
             idPerson = -1;
             //check if person with provided first and last names already exists
-            //first define seleletion criteria
-            firstName = params[i].getString(KEY_FIRST_NAME);
-            lastName = params[i].getString(KEY_LAST_NAME);
-            selectionArgs = new String[]{firstName, lastName};
-
-
+            //first define selection criteria
+            //three cases possible:
+            //only last name exists
+            if (!params[i].containsKey(DataContract.KEY_FIRST_NAME)) {
+                lastName = params[i].getString(DataContract.KEY_LAST_NAME);
+                selection = DataContract.Person.COLUMN_LAST_NAME + "=?";
+                selectionArgs = new String[]{lastName};
+                //only first name exists
+            } else if (!params[i].containsKey(DataContract.KEY_LAST_NAME)) {
+                firstName = params[i].getString(DataContract.KEY_FIRST_NAME);
+                selection = DataContract.Person.COLUMN_FIRST_NAME + "=?";
+                selectionArgs = new String[]{firstName};
+            } else {
+                firstName = params[i].getString(DataContract.KEY_FIRST_NAME);
+                lastName = params[i].getString(DataContract.KEY_LAST_NAME);
+                selection = DataContract.Person.COLUMN_FIRST_NAME + "=? AND " + DataContract.Person.COLUMN_LAST_NAME + "=?";
+                selectionArgs = new String[]{firstName, lastName};
+            }
             //query provider using selection
-            Cursor cursor = mContext.getContentResolver().query(DataContract.Person.CONTENT_URI, null, selection, selectionArgs, null);
+            Cursor cursor = mContext.getContentResolver()
+                    .query(
+                            DataContract.Person.CONTENT_URI,
+                            null,
+                            selection,
+                            selectionArgs,
+                            null);
             if (cursor != null && cursor.getCount() > 0) {
                 //if person already exists
                 cursor.moveToFirst();
@@ -88,9 +100,16 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
             } else {
                 //otherwise save person
                 ContentValues personRecord = new ContentValues();
-                personRecord.put(DataContract.Person.COLUMN_FIRST_NAME, firstName);
-                personRecord.put(DataContract.Person.COLUMN_LAST_NAME, lastName);
-                Uri newPersonUri = mContext.getContentResolver().insert(DataContract.Person.CONTENT_URI, personRecord);
+                //save first name if exists
+                if (!TextUtils.isEmpty(firstName)) {
+                    personRecord.put(DataContract.Person.COLUMN_FIRST_NAME, firstName);
+                }
+                //save last name if exists
+                if (!TextUtils.isEmpty(lastName)) {
+                    personRecord.put(DataContract.Person.COLUMN_LAST_NAME, lastName);
+                }
+                Uri newPersonUri = mContext.getContentResolver()
+                        .insert(DataContract.Person.CONTENT_URI, personRecord);
                 try {
                     //and get ID from saved entity to be ready to save number
                     idPerson = Long.parseLong(DataContract.Person.getPersonIdFromUri(newPersonUri));
@@ -104,7 +123,7 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
             if (idPerson > -1) {
 
                 //if pic data provided
-                parcelable = params[i].getParcelable(KEY_IMAGE_URI);
+                parcelable = params[i].getParcelable(DataContract.KEY_IMAGE_BITMAP);
                 if (parcelable != null && parcelable instanceof Bitmap) {
                     bitmap = (Bitmap) parcelable;
                     String picPath = mContext.getDir(Utility.PIC_DIR, Context.MODE_PRIVATE).getPath()
@@ -134,7 +153,8 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (mDataSetWatcher != null) mDataSetWatcher.dataSetChanged(mAllTaskQty == mDoneTaskQty);
+        if (mDataSetWatcher != null)
+            mDataSetWatcher.dataSetChanged(mAllTaskQty == mDoneTaskQty);
     }
 
     public void setmDataSetWatcher(DataSetWatcher mDataSetWatcher) {

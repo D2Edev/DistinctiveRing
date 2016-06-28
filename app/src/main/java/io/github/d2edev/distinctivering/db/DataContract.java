@@ -20,6 +20,11 @@ public class DataContract {
     public static final String PATH_NUMBER = "number";
     public static final String PATH_PERSON = "person";
     public static final String PATH_ALL = "all";
+    //app-wide keys
+    public static final String KEY_FIRST_NAME = "kfm";
+    public static final String KEY_LAST_NAME = "klm";
+    public static final String KEY_NUMBER = "kn";
+    public static final String KEY_IMAGE_BITMAP = "kiu";
 
     public static final class Person implements BaseColumns{
         //base URI for person
@@ -40,6 +45,7 @@ public class DataContract {
         public static final String COLUMN_LAST_NAME="last_name";
         //String data, possibly null
         public static final String COLUMN_PIC_PATH="pic_path";
+
 
         //builds URI upon provided entry ID
         public static Uri builPersonUri(long id) {

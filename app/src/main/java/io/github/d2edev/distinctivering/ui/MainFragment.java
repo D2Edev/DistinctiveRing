@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,6 +25,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,7 +51,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final int ALLOWEDLIST_CURSOR_LOADER = 0;
     public static final int REQUEST_SELECT_PHONE_NUMBER = 101;
     private static final int REQUEST_SHOW_DR_NOTIFICATION = 201;
-    private static final int DR_ACTIVE_NOTIFY = 301;
     private FloatingActionButton mFab;
     private String[] mSortBy;
     private String[] mSortOrder;
@@ -124,9 +124,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         mListView.addHeaderView(headerView);
 
-
         mAdapter = new NameNumPicListAdapter(getContext(), null, 0);
         mListView.setAdapter(mAdapter);
+        mListView.setEmptyView(rootView.findViewById(R.id.empty_view_text));
 
         return rootView;
     }
@@ -154,24 +154,30 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void unsetNotification() {
-        NotificationManagerCompat.from(getActivity()).cancel(DR_ACTIVE_NOTIFY);
+        //cancel notification
+        NotificationManagerCompat.from(getActivity()).cancel(MainActivity.DR_ACTIVE_NOTIFY);
     }
 
     private void setNotificationOn() {
-        Intent mainActivityIntent=new Intent(getActivity(),MainActivity.class);
-        PendingIntent notificationIntent=PendingIntent.getActivity(
+        //click on notification will start mainactivity
+        Intent mainActivityIntent = new Intent(getActivity(), MainActivity.class);
+        //wrap intent into PendingIntent
+        PendingIntent notificationIntent = PendingIntent.getActivity(
                 getActivity(),
                 REQUEST_SHOW_DR_NOTIFICATION,
-                mainActivityIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder= new NotificationCompat.Builder(getActivity())
+                mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //build notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_icon_notify)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.enabled))
                 .setContentIntent(notificationIntent);
-        Notification notification=builder.build();
-        notification.flags|= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        NotificationManagerCompat mNotificationManager= NotificationManagerCompat.from(getActivity());
-        mNotificationManager.notify(DR_ACTIVE_NOTIFY,notification);
+        Notification notification = builder.build();
+        //set flags so notification will be enabled unless "ring off" mode set
+        notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        //show
+        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(getActivity());
+        mNotificationManager.notify(MainActivity.DR_ACTIVE_NOTIFY, notification);
     }
 
     @Override
@@ -219,7 +225,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_main_add_item: {
-                //TODO process add from contact book
                 showContactsToPick();
                 break;
             }
@@ -233,7 +238,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             }
             case R.id.action_main_add_item_manual: {
-                showManualAddDialog();
+                showAddDialog(null);
                 break;
             }
             case R.id.action_help: {
@@ -249,15 +254,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
-        }else{
-            Toast.makeText(getActivity(),getString(R.string.no_contacts_provider),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.no_contacts_provider), Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    private void showManualAddDialog() {
-        DialogFragment manualAddDialogFragment = new AddDialogFragment();
-        manualAddDialogFragment.show(getActivity().getSupportFragmentManager(), AddDialogFragment.TAG);
+    private void showAddDialog(Bundle bundle) {
+        AddDialogFragment addDialogFragment = new AddDialogFragment();
+        addDialogFragment.setContactDataBundle(bundle);
+        addDialogFragment.show(getActivity().getSupportFragmentManager(), AddDialogFragment.TAG);
 
 
     }
@@ -274,6 +280,19 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
         mHasRecords = cursor.getCount() > 0 ? true : false;
+        //enable or disable Floating ActBar visibility and general DistRing settings depending on
+        //recors existence
+        if(mHasRecords){
+            mFab.setVisibility(View.VISIBLE);
+        }else{
+            //save "disable" to prefs
+            Utility.setDistinctiveRingEnabled(getActivity(), false);
+            //set "off image" to fab
+            mFab.setImageResource(R.drawable.ic_volume_off_white);
+            //remove notification
+            unsetNotification();
+            mFab.setVisibility(View.GONE);
+        }
 
     }
 
@@ -293,13 +312,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void dataSetChanged(boolean succes) {
         Log.d(TAG, "dataSetChanged: " + succes);
-        if (succes){
-        String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_SORT_ORDER, sortOrder);
-        getLoaderManager().restartLoader(ALLOWEDLIST_CURSOR_LOADER, bundle, this);}
-        else{
-            Toast.makeText(getActivity(),getString(R.string.no_data_added),Toast.LENGTH_LONG).show();
+        if (succes) {
+            String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_SORT_ORDER, sortOrder);
+            getLoaderManager().restartLoader(ALLOWEDLIST_CURSOR_LOADER, bundle, this);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.no_data_added), Toast.LENGTH_LONG).show();
         }
 
 
@@ -309,80 +328,66 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         //TODO finalize logic to add contact from ContactBook
-        if (requestCode == REQUEST_SELECT_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-            // Get the URI and query the content provider for the phone number
-            Uri contactUri = data.getData();
-            String[] projection = new String[]{
-                    ContactsContract.CommonDataKinds.Phone.NUMBER, //index=0
-                    ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI,//index=1
-                    ContactsContract.Data.CONTACT_ID //index=2
-            };
-
-            Log.d(TAG, "onActivityResult: uri " + contactUri);
-            Cursor contactCursor = getActivity().getContentResolver().query(contactUri, projection,
-                    null, null, null);
-            // If the cursor returned is valid, get the phone number
-
-
-            if (contactCursor != null & contactCursor.moveToFirst()) {
-                String number = "";
-                String firstName = "";
-                String lastName = "";
-                Bitmap contactBitmap = null;
-                number = contactCursor.getString(0);
-                String picAddress = contactCursor.getString(1);
-                long contactId = contactCursor.getLong(2);
-                Uri baseContactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-                Uri dataUri = Uri.withAppendedPath(baseContactUri, ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
-                Cursor nameCursor = getActivity().getContentResolver().query(
-                        dataUri,
-                        null,
-                        ContactsContract.RawContacts.Data.MIMETYPE + "=?",
-                        new String[]{ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE},
-                        null);
-                if (nameCursor != null && nameCursor.moveToFirst()) {
-                    firstName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.RawContacts.Data.DATA2));
-                    lastName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.RawContacts.Data.DATA3));
-                    Log.d(TAG, "onActivityResult: " + firstName + " " + lastName);
-                    nameCursor.close();
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_SELECT_PHONE_NUMBER: {
+                    showConfirmationDialog(data);
                 }
-
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                if (picAddress == null) {
-                    builder.setIcon(R.drawable.ic_person_green);
-                } else {
-                    contactBitmap = Utility.decodeSampledBitmapFromUri(Uri.parse(picAddress), getActivity(), 50, 30);
-                    Drawable drawable = null;
-                    if (contactBitmap != null) {
-                        drawable = new BitmapDrawable(getResources(), contactBitmap);
-                    }
-                    if (drawable == null) {
-                        builder.setIcon(R.drawable.ic_person_green);
-                    } else {
-                        builder.setIcon(drawable);
-                    }
-                }
-
-
-                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder
-                        .setTitle("New Contact")
-                        .setMessage("Name: " + firstName
-                                + " " + lastName
-                                + "\nNumber: " + number)
-                        .setCancelable(false);
-                builder.create().show();
-
-                contactCursor.close();
+                default: //do nothing;
             }
-
         }
-
     }
+
+    private void showConfirmationDialog(Intent data) {
+        // Get the URI and query the content provider for the phone number
+        Uri contactUri = data.getData();
+        String[] projection = new String[]{
+                ContactsContract.CommonDataKinds.Phone.NUMBER, //index=0
+                ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI,//index=1
+                ContactsContract.Data.CONTACT_ID //index=2
+        };
+
+        Log.d(TAG, "onActivityResult: uri " + contactUri);
+        Cursor contactCursor = getActivity().getContentResolver().query(contactUri, projection,
+                null, null, null);
+        // If the cursor returned is valid, get the phone number
+        if (contactCursor != null & contactCursor.moveToFirst()) {
+            String number = "";
+            String firstName = "";
+            String lastName = "";
+            Bitmap contactBitmap = null;
+            number = contactCursor.getString(0);
+            String picAddress = contactCursor.getString(1);
+            long contactId = contactCursor.getLong(2);
+            Uri baseContactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+            Uri dataUri = Uri.withAppendedPath(baseContactUri, ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
+            Cursor nameCursor = getActivity().getContentResolver().query(
+                    dataUri,
+                    null,
+                    ContactsContract.RawContacts.Data.MIMETYPE + "=?",
+                    new String[]{ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE},
+                    null);
+            if (nameCursor != null && nameCursor.moveToFirst()) {
+                firstName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.RawContacts.Data.DATA2));
+                lastName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.RawContacts.Data.DATA3));
+                Log.d(TAG, "onActivityResult: " + firstName + " " + lastName);
+                nameCursor.close();
+            }
+            if (picAddress != null) {
+                contactBitmap = Utility.decodeSampledBitmapFromUri(Uri.parse(picAddress), getActivity(), 50, 30);
+            }
+            contactCursor.close();
+            Bundle bundle = new Bundle();
+            if (!TextUtils.isEmpty(firstName))
+                bundle.putString(DataContract.KEY_FIRST_NAME, firstName);
+            if (!TextUtils.isEmpty(lastName))
+                bundle.putString(DataContract.KEY_LAST_NAME, lastName);
+            bundle.putString(DataContract.KEY_NUMBER, number);
+            if (contactBitmap != null)
+                bundle.putParcelable(DataContract.KEY_IMAGE_BITMAP, contactBitmap);
+            showAddDialog(bundle);
+        }
+    }
+
+
 }

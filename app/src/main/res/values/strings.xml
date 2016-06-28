@@ -31,4 +31,5 @@
     <string name="no_contacts_provider">No contacts app detected.\nInstall any (i.e. standard Google Contacts)\nand try again!</string>
     <string name="no_data_added">No data added! Pls check if number is alredy on list!</string>
     <string name="enabled">Ring enabled</string>
+    <string name="no_records_add">No records. Use menu to add some from Contact Book or manually</string>
 </resources>

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -190,6 +191,13 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
+        if(cursor.getCount()>0){
+            mFab.setVisibility(View.VISIBLE);
+        }else{
+            mFab.setVisibility(View.GONE);
+            Utility.setDistinctiveRingEnabled(getActivity(),false);
+            NotificationManagerCompat.from(getActivity()).cancel(MainActivity.DR_ACTIVE_NOTIFY);
+        }
 
     }
 

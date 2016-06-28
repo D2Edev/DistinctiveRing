@@ -20,6 +20,7 @@ import io.github.d2edev.distinctivering.util.Utility;
 public class MainActivity extends AppCompatActivity implements BasicActionsListener {
     public static final String TAG = "TAG_" + MainActivity.class.getSimpleName();
         private Toolbar mToolbar;
+    public static final int DR_ACTIVE_NOTIFY = 301;
 
 
     @Override

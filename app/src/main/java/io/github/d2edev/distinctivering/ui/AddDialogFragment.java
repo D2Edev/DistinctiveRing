@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,8 +22,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import io.github.d2edev.distinctivering.R;
+import io.github.d2edev.distinctivering.db.DataContract;
 import io.github.d2edev.distinctivering.db.EntrySaveTask;
 import io.github.d2edev.distinctivering.logic.DataSetWatcher;
 import io.github.d2edev.distinctivering.util.Utility;
@@ -51,6 +55,10 @@ public class AddDialogFragment extends DialogFragment {
     private boolean bShowDefaultPic = true;
     private Bitmap picBitmap;
     private Uri imageUri;
+    private Bundle mBundle;
+
+
+
 
 
     @NonNull
@@ -61,7 +69,7 @@ public class AddDialogFragment extends DialogFragment {
         //get inflanter and inflate custom layout
         // Pass null as the parent view because we dont attach
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.dialog_manual_add, null);
+        mDialogView = inflater.inflate(R.layout.dialog_add, null);
         dialogBuilder
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_add_entry, new DialogInterface.OnClickListener() {
@@ -85,16 +93,27 @@ public class AddDialogFragment extends DialogFragment {
 
     private void addEntry() {
         Bundle bundle = new Bundle();
-        bundle.putString(EntrySaveTask.KEY_FIRST_NAME, String.valueOf(mFirstNameInput.getText()));
-        bundle.putString(EntrySaveTask.KEY_LAST_NAME, String.valueOf(mLastNameInput.getText()));
-        bundle.putString(EntrySaveTask.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
-        bundle.putParcelable(EntrySaveTask.KEY_IMAGE_URI, picBitmap);
+        if(mBundle!=null){
+            bundle=mBundle;
+        }else{
+            String tmp = String.valueOf(mFirstNameInput.getText());
+            //if first name is not empty - put to bundle
+            if(!TextUtils.isEmpty(tmp)) {bundle.putString(DataContract.KEY_FIRST_NAME, tmp);}
+            tmp=String.valueOf(mLastNameInput.getText());
+            //same for last name
+            if(!TextUtils.isEmpty(tmp)) { bundle.putString(DataContract.KEY_LAST_NAME,tmp );}
+            bundle.putString(DataContract.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
+            bundle.putParcelable(DataContract.KEY_IMAGE_BITMAP, picBitmap);
+        }
         EntrySaveTask task = new EntrySaveTask(getActivity());
         task.setmDataSetWatcher((DataSetWatcher) getActivity().getSupportFragmentManager().findFragmentByTag(MainFragment.TAG));
         task.execute(bundle);
 
     }
 
+    public void setContactDataBundle(Bundle bundle){
+        mBundle=bundle;
+    }
 
     @Override
     public void onResume() {
@@ -104,10 +123,38 @@ public class AddDialogFragment extends DialogFragment {
         mLastNameInput = (EditText) mDialogView.findViewById(R.id.dialog_second_name);
         mNumberInput = (EditText) mDialogView.findViewById(R.id.dialog_number);
         mUserPic = (ImageView) mDialogView.findViewById(R.id.dialog_image);
-        //show default pic if flag was not changed for other pic
-        if (bShowDefaultPic) mUserPic.setImageResource(R.drawable.ic_person_green);
-        //enable or disable save button?
-        checkOkButton();
+        TextView header= (TextView) mDialogView.findViewById(R.id.dialog_header);
+        //bundle presence indicates that dialog is shown as confirmation for data gained
+        //from Contact PICK, not for manual input
+        if(mBundle==null){
+            header.setText(getString(R.string.manual_add_dialog_title));
+            //show default pic if flag was not changed for other pic
+            if (bShowDefaultPic) mUserPic.setImageResource(R.drawable.ic_person_green);
+            //enable or disable save button?
+            checkOkButton();
+        }else{
+            header.setText(getString(R.string.contacts_add_dialog_title));
+            //fill inputs with data from bundle and lock them
+            //to prevent modifying
+            if(mBundle.containsKey(DataContract.KEY_FIRST_NAME))mFirstNameInput
+                    .setText(mBundle.getString(DataContract.KEY_FIRST_NAME));
+            mFirstNameInput.setEnabled(false);
+            if(mBundle.containsKey(DataContract.KEY_LAST_NAME))mLastNameInput
+                    .setText(mBundle.getString(DataContract.KEY_LAST_NAME));
+            mLastNameInput.setEnabled(false);
+            mNumberInput.setText(mBundle.getString(DataContract.KEY_NUMBER));
+            mNumberInput.setEnabled(false);
+            mPositiveButton.setEnabled(true);
+            if (mBundle.containsKey(DataContract.KEY_IMAGE_BITMAP)){
+                Parcelable tmp=mBundle.getParcelable(DataContract.KEY_IMAGE_BITMAP);
+                if(tmp instanceof Bitmap){
+                    mUserPic.setImageBitmap((Bitmap) tmp);
+                }
+            }else{
+                mUserPic.setImageResource(R.drawable.ic_person_green);
+            }
+        }
+
         mUserPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +230,9 @@ public class AddDialogFragment extends DialogFragment {
     }
 
     private void checkOkButton() {
-        mPositiveButton.setEnabled(bFirstNameOK && bSecondNameOK && bNumberOK);
+        //either first or last name should be entered
+        //number should be entered
+        mPositiveButton.setEnabled((bFirstNameOK || bSecondNameOK) && bNumberOK);
     }
 
     private void supposePictureSelection() {

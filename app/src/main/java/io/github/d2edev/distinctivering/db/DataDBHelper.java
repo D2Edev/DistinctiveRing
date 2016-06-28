@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataDBHelper extends SQLiteOpenHelper{
 
-    //TODO make possible name-only entries (second name skipped)
 
     //should update this on any change on data structure
     public static final int DATABASE_VERSION=1;
@@ -39,8 +38,8 @@ public class DataDBHelper extends SQLiteOpenHelper{
     private static final String SQL_CREATE_TABLE_PERSON="CREATE TABLE " +
             DataContract.Person.TABLE_NAME + " ("+
             DataContract.Person._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
-            DataContract.Person.COLUMN_FIRST_NAME + " TEXT NOT NULL, "+
-            DataContract.Person.COLUMN_LAST_NAME + " TEXT NOT NULL, "+
+            DataContract.Person.COLUMN_FIRST_NAME + " TEXT, "+
+            DataContract.Person.COLUMN_LAST_NAME + " TEXT, "+
             DataContract.Person.COLUMN_PIC_PATH + " TEXT "+
             ");";
     //Table to keep phone numbers. Each number should relate to corresponding Person record
