@@ -5,7 +5,7 @@
         android:id="@+id/action_help"
         android:orderInCategory="103"
         android:icon="@drawable/ic_help_white"
-        android:title="@string/action_menu_main_help_title"
+        android:title="@string/action_title_help"
         app:showAsAction="ifRoom"
         />
 

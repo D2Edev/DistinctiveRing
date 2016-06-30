@@ -12,6 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
 
+    <TextView
+        android:id="@+id/empty_view_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:fontFamily="sans-serif-condensed"
+        android:textSize="@dimen/font_24"
+        android:textColor="@color/my_secondary_text"
+        android:text="@string/no_records_add"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -19,6 +36,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="bottom|end"
         android:src="@drawable/ic_delete_white"
+        android:visibility="gone"
 
         />
 

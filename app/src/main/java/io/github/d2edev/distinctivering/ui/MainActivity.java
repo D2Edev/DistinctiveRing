@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -88,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         DeleteFragment df = new DeleteFragment();
-        df.setBasicActionsListener(this);
         transaction.replace(R.id.fragment_container, df, DeleteFragment.TAG);
         transaction.addToBackStack(DeleteFragment.TAG);
         transaction.commit();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getSupportActionBar();
+        if(ab!=null)ab.setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,8 +119,9 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
 
     @Override
     public void onBackPressed() {
+        ActionBar ab = getSupportActionBar();
+        if(ab!=null)ab.setDisplayHomeAsUpEnabled(false);
         if(getSupportFragmentManager().getBackStackEntryCount()>0){
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mToolbar.setNavigationOnClickListener(null);
         }
         super.onBackPressed();

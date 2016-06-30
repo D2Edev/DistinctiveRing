@@ -5,28 +5,28 @@
         android:id="@+id/action_main_add_item"
         android:icon="@drawable/ic_add_circle_white"
         android:orderInCategory="100"
-        android:title="@string/action_main_add_title"
+        android:title="@string/action_title_add_from_contacts"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_main_delete_item"
         android:icon="@drawable/ic_delete_white"
         android:orderInCategory="101"
-        android:title="@string/action_menu_main_delete_title"
+        android:title="@string/action_title_delete"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_main_add_item_manual"
         android:icon="@drawable/ic_manual_add"
         android:orderInCategory="101"
-        android:title="@string/action_add_manual_title"
+        android:title="@string/action_title_add_manual"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_help"
         android:orderInCategory="103"
         android:icon="@drawable/ic_help_white"
-        android:title="@string/action_menu_main_help_title"
+        android:title="@string/action_title_help"
         app:showAsAction="ifRoom"
         />
 

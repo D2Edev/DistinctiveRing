@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:background="@android:color/transparent"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#cd4caf50"
+        android:paddingBottom="@dimen/listview_small_margin"
+        >
+        <!-- Header-->
+        <TextView
+            android:layout_alignParentTop="true"
+            android:id="@+id/help_main_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listview_small_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
+            android:textColor="@color/my_icons"
+            android:text="@string/help_delete_header"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="@dimen/font_24"
+            android:gravity="center"
+            />
+
+        <!-- General info-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listview_small_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
+            android:textColor="@color/my_icons"
+            android:textSize="@dimen/font_20"
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/help_main_message_general"
+            android:layout_below="@+id/help_main_header"
+            android:text="@string/help_on_delete_screen"
+            />
+
+
+        <!-- Help section-->
+        <!-- About section-->
+    </RelativeLayout>
+</ScrollView>

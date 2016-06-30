@@ -1,35 +1,39 @@
 <resources>
-    <string name="app_name">Distinctive Ring</string>
-    <string name="title_activity_main_fab">Tiny Distinctive Ring</string>
-    <string name="stub_phone_number">+12 (345) 67 88 9900</string>
-
-    <string name="action_add_manual_title">Manual add</string>
-    <string name="action_add_from_list">List add</string>
-    <string name="action_main_about_title">About...</string>
-    <string name="action_main_add_title">Add number</string>
-    <string name="action_menu_main_help_title">Help</string>
-    <string name="action_menu_main_delete_title">Delete numbers(s)</string>
+    <string name="app_name" translatable="false">Tiny Distinctive Ring</string>
+    <string name="title_activity_main_fab" translatable="false">Tiny Distinctive Ring</string>
+    <string name="stub_phone_number" translatable="false">+12 (345) 67 88 9900</string>
+    <string name="action_title_add_manual">Manual add</string>
+    <string name="action_main_about_title">About…</string>
+    <string name="action_title_add_from_contacts">Add from Contacts</string>
+    <string name="action_title_help">Help</string>
+    <string name="action_title_delete">Delete numbers(s)</string>
     <string name="manual_add_dialog_title">Add entry manually</string>
     <string name="dialog_first_name_hint">Enter first name</string>
     <string name="dialog_second_name_hint">Enter second name</string>
-    <string name="dialog_number_hint">+00 (000) 00-0000</string>
+    <string name="dialog_number_hint" translatable="false">+00 (000) 00-0000</string>
     <string name="dialog_add_entry">Add entry</string>
     <string name="dialog_cancel">CANCEL</string>
-    <string name="content_authority">io.github.d2edev.distinctivering</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="content_authority" translatable="false">io.github.d2edev.distinctivering</string>
     <string name="sort_by_first_name">by First Name</string>
     <string name="sort_by_last_name">by Last name</string>
     <string name="sort_by_number">by Number</string>
     <string name="sort_asc">Asc</string>
     <string name="sort_desc">Desc</string>
-    <string name="delete_acticity_label">Delete record(s)</string>
     <string name="no_records">No records!</string>
-    <string name="add_activity_label">Add from Contacts</string>
     <string name="about_main_text">d2e DEVELOPMENT &#169;2016\nSmall application which enables ringing during calls from selected persons despite current volume profile. Click below to visit us:</string>
-    <string name="about_web_address">d2edev.github.io</string>
-    <string name="action_searchl_title">Search</string>
+    <string name="about_web_address" translatable="false">d2edev.github.io</string>
     <string name="contacts_add_dialog_title">Entry from Contacts</string>
     <string name="no_contacts_provider">No contacts app detected.\nInstall any (i.e. standard Google Contacts)\nand try again!</string>
-    <string name="no_data_added">No data added! Pls check if number is alredy on list!</string>
+    <string name="no_data_added">No data added! Pls check if number is already on list!</string>
     <string name="enabled">Ring enabled</string>
-    <string name="no_records_add">No records. Use menu to add some from Contact Book or manually</string>
+    <string name="no_records_add">No records. Use Main Screen menu to add some from Contact Book or manually</string>
+    <string name="help_on_add_from_contacts">This will launch system contact manager (Google Contacts or similar) in contact selection mode. After selecting contact (and number, if several) result will be returned to dialog for final confirmation or cancellation.</string>
+    <string name="help_main_header">Main Screen Help:</string>
+    <string name="help_on_delete">This wil switch user interface in  mode where records can be selected and deleted. See more details in help screen for this mode.</string>
+    <string name="help_on_main_screen">Main screen presents list of contacts stored for Distinctive Ring enablement. List could be sorted by clicking respective part of it\'s header (left - by first name, second name or number, right - ascending or descending, respectively). If list is not empty, an action button presented right down, which enables/disables distictive ring for listed contacts. If Distictive Ring is enabled, there\'s notification shown (a bell with lightning), clicking on which will bring main program screen. Menu actions are listed below.</string>
+    <string name="help_on_add_manual">This will launch dialog for entering entry details manually. Phone number is obligatory and at least one of first or last name should be entered. Clicking the default contact icon (human siluette) will bring system Photo manager in selection mode (i.e. Android gallery or similar) if one installed. Selected picture will be saved as avatar for entry being entered.</string>
+    <string name="help_delete_header">Delete Screen Help:</string>
+    <string name="help_on_delete_screen">Delete screen presents list of contacts stored. List could be sorted by clicking respective part of it\'s header (left - by first name, second name or number, right - ascending or descending, respectively). Each entry could be selected for deletion by clicking it. Second click deselects back. Changing sort order doesn\'t deselect previously selected items. If list is not empty and at least one entry selected, an action button presented right down, click on which deletes currenly selected records and rebuilds list on records remained. If list is empty or nothing selected then action button is not visible. Clicking on left up back arrow leaves delete screen and switches to main screen.</string>
+    <string name="no_pics_provider">No pics app detected.\nInstall any (i.e. standard Google Gallery)\nand try again!</string>
 </resources>

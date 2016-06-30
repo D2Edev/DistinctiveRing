@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.db.DataContract;
@@ -237,9 +238,14 @@ public class AddDialogFragment extends DialogFragment {
 
     private void supposePictureSelection() {
         //start implicit intent to get pic
+
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
         startActivityForResult(pickPhoto, MANUAL_PIC_SELECTION);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.no_pics_provider), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

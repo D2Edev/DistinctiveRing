@@ -81,7 +81,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mSortOrder = getResources().getStringArray(R.array.sortOrder);
         mSortTypeIndex = Utility.getSortTypeIndex(getActivity());
         mSortAsc = Utility.isSortOrderAscending(getActivity());
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 
 
     }
@@ -242,11 +242,27 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             }
             case R.id.action_help: {
-                //TODO code help screen
+                showHelpDialog();
                 break;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showHelpDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        View dialogView=getActivity().getLayoutInflater().inflate(R.layout.help_main,null,false);
+        builder
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setView(dialogView);
+        builder.create().show();
+
     }
 
     private void showContactsToPick() {
