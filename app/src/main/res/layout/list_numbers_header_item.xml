@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/listview_middle_margin"
         android:textSize="@dimen/font_20"
         android:fontFamily="sans-serif-condensed"
-        android:layout_weight="1"
+        android:layout_weight="2"
         tools:text="Asc"
         />
 

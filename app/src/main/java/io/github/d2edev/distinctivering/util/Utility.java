@@ -385,4 +385,8 @@ public class Utility {
         }
 
     }
+
+    public static boolean isNUmberInList_STUB(Context context, String number){
+        return true;
+    }
 }

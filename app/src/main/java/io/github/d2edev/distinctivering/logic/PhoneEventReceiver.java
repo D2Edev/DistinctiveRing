@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import io.github.d2edev.distinctivering.BuildConfig;
+
 /**
  * Created by d2e on 10.06.16.
  */
@@ -19,7 +21,7 @@ public class PhoneEventReceiver extends BroadcastReceiver {
     private IncomingCallListener incomingCallListener;
 
     PhoneEventReceiver() {
-    //on class init we  connect to interface
+        //on class init we  connect to interface
 
         incomingCallListener = EventProcessor.getInstance();
     }
@@ -31,13 +33,17 @@ public class PhoneEventReceiver extends BroadcastReceiver {
         //on bcast receive we get instatnce of Tel Manager
         //and check call state
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "getCallState" + tm.getCallState());
+        }
         switch (tm.getCallState()) {
             case TelephonyManager.CALL_STATE_RINGING: {
                 //in case of incoming call we check what's the incoming number
                 //and if it makes sense - pass it to Event Processor through interface
                 String phoneNr = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                if(phoneNr!=null&&!phoneNr.equals("")){
-                incomingCallListener.onIncomingCall(context, phoneNr);}
+                if (phoneNr != null && !phoneNr.equals("")) {
+                    incomingCallListener.onIncomingCall(context, phoneNr);
+                }
                 break;
             }
             case TelephonyManager.CALL_STATE_IDLE: {

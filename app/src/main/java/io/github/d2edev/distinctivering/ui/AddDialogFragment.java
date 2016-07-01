@@ -41,7 +41,7 @@ import io.github.d2edev.distinctivering.util.Utility;
 public class AddDialogFragment extends DialogFragment {
     public static final String TAG = "TAG_ManualAddDialog";
     public static final int MIN_TEXT_LENGTH = 1;
-    public static final int MIN_NUM_LENGTH = 10;
+    public static final int MIN_NUM_LENGTH = 6;
     public static final int MANUAL_PIC_SELECTION = 1;
     private static final String KEY_OK_ENABLED = "OK_ENABLED";
     private Button mPositiveButton;
