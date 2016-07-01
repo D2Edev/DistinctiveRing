@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         callMainUI();
+        //TODO make check telephony is present
+        //TODO make marsmallow permissins logic
         Utility.firstLaunchPreparations(this);
 
     }

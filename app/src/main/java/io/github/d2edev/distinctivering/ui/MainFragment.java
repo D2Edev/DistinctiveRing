@@ -99,7 +99,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             }
         });
-        mFab.setImageResource(Utility.isDistinctiveRingEnabled(getActivity()) ? R.drawable.ic_volume_up_white : R.drawable.ic_volume_off_white);
+        if(Utility.isDistinctiveRingEnabled(getActivity())){
+            setNotificationOn();
+            mFab.setImageResource(R.drawable.ic_volume_up_white);
+        }else{
+            mFab.setImageResource(R.drawable.ic_volume_off_white);
+        }
         mListView = (ListView) rootView.findViewById(R.id.listview);
         ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.list_numbers_header_item, mListView, false);
         //header SortBy part init
