@@ -363,7 +363,7 @@ public class Utility {
 
     public static int getSavedRingerMode(Context context) {
         SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt(KEY_RINGER_MODE, AudioManager.RINGER_MODE_VIBRATE);
+        return sp.getInt(KEY_RINGER_MODE, AudioManager.RINGER_MODE_SILENT);
     }
 
     public static byte[] inputStreamToByteArray(InputStream is){

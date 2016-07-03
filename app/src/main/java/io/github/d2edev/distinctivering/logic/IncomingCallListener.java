@@ -8,6 +8,6 @@ import android.content.Context;
 
 public interface IncomingCallListener {
     void onIncomingCall(Context context, String number);
-
+    void onOffHook(Context context);
     void onCallEnded(Context context);
 }

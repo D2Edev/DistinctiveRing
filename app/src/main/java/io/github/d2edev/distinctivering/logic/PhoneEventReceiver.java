@@ -50,6 +50,10 @@ public class PhoneEventReceiver extends BroadcastReceiver {
                 incomingCallListener.onCallEnded(context);
                 break;
             }
+            case TelephonyManager.CALL_STATE_OFFHOOK:{
+                incomingCallListener.onOffHook(context);
+                break;
+            }
         }
     }
 
