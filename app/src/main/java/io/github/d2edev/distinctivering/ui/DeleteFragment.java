@@ -48,8 +48,6 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     private FloatingActionButton mFab;
 
 
-//    TODO think about correct deleting persons with no numbers
-
     public DeleteFragment() {
         // Required empty public constructor
     }

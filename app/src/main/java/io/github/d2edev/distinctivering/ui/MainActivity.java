@@ -14,26 +14,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.util.Utility;
 
 public class MainActivity extends AppCompatActivity implements BasicActionsListener {
     public static final String TAG = "TAG_" + MainActivity.class.getSimpleName();
-        private Toolbar mToolbar;
+    private Toolbar mToolbar;
     public static final int DR_ACTIVE_NOTIFY = 301;
 
+            //TODO make check telephony is present
+            //TODO make marsmallow permissins logic
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        callMainUI();
-        //TODO make check telephony is present
-        //TODO make marsmallow permissins logic
-        Utility.firstLaunchPreparations(this);
+        if (Utility.isTelephonyAvailable(this)) {
+            setContentView(R.layout.activity_main);
+            mToolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(mToolbar);
+            callMainUI();
+            Utility.firstLaunchPreparations(this);
+
+        } else {
+            Toast.makeText(this, getString(R.string.no_phone_line), Toast.LENGTH_LONG).show();
+            finish();
+        }
 
     }
 
@@ -85,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     }
 
 
-
     @Override
     public void callDeleteUI() {
         FragmentManager fm = getSupportFragmentManager();
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         transaction.addToBackStack(DeleteFragment.TAG);
         transaction.commit();
         ActionBar ab = getSupportActionBar();
-        if(ab!=null)ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,12 +128,14 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     @Override
     public void onBackPressed() {
         ActionBar ab = getSupportActionBar();
-        if(ab!=null)ab.setDisplayHomeAsUpEnabled(false);
-        if(getSupportFragmentManager().getBackStackEntryCount()>0){
-        mToolbar.setNavigationOnClickListener(null);
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(false);
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            mToolbar.setNavigationOnClickListener(null);
         }
         super.onBackPressed();
     }
+
+
 }
 
 

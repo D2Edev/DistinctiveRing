@@ -10,6 +10,8 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -21,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.github.d2edev.distinctivering.BuildConfig;
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.db.DataContract;
 
@@ -382,6 +385,16 @@ public class Utility {
             e.printStackTrace();
         }finally {
             return byteArray;
+        }
+
+    }
+
+    public static boolean isTelephonyAvailable(Context context){
+        int type = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getPhoneType();
+        if (type==TelephonyManager.PHONE_TYPE_NONE){
+            return false;
+        }else{
+            return  true;
         }
 
     }

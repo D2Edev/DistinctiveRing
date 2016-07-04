@@ -36,4 +36,5 @@
     <string name="help_delete_header">Delete Screen Help:</string>
     <string name="help_on_delete_screen">Delete screen presents list of contacts stored. List could be sorted by clicking respective part of it\'s header (left - by first name, second name or number, right - ascending or descending, respectively). Each entry could be selected for deletion by clicking it. Second click deselects back. Changing sort order doesn\'t deselect previously selected items. If list is not empty and at least one entry selected, an action button presented right down, click on which deletes currenly selected records and rebuilds list on records remained. If list is empty or nothing selected then action button is not visible. Clicking on left up back arrow leaves delete screen and switches to main screen.</string>
     <string name="no_pics_provider">No pics app detected.\nInstall any (i.e. standard Google Gallery)\nand try again!</string>
+    <string name="no_phone_line">No phone detected, exiting...</string>
 </resources>
