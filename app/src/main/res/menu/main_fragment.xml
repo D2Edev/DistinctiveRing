@@ -18,13 +18,21 @@
     <item
         android:id="@+id/action_main_add_item_manual"
         android:icon="@drawable/ic_manual_add"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:title="@string/action_title_add_manual"
         app:showAsAction="ifRoom"
         />
+
+    <item
+        android:id="@+id/action_main_settings"
+        android:orderInCategory="103"
+        android:title="@string/action_title_settings"
+        app:showAsAction="never"
+        />
+
     <item
         android:id="@+id/action_help"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         android:icon="@drawable/ic_help_white"
         android:title="@string/action_title_help"
         app:showAsAction="ifRoom"

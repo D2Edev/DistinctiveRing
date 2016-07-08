@@ -58,7 +58,7 @@ public class NameNumPicListAdapter extends CursorAdapter {
         String name = "";
 //        Log.d(TAG, "bindView: cursor " + cursor.getString(0) +" " +cursor.getString(1)+ " "
 //                + cursor.getString(2)+ " " + cursor.getString(3) );
-        if (selectedNumIDs.contains(Integer.valueOf(cursor.getInt(5)))) {
+        if (selectedNumIDs.contains(cursor.getInt(5))) {
             view.setBackgroundColor(Color.parseColor(context.getString(R.color.my_accent_light)));
         } else {
             view.setBackgroundColor(Color.TRANSPARENT);
@@ -100,7 +100,7 @@ public class NameNumPicListAdapter extends CursorAdapter {
     }
 
     private String formattedNameLine(String first, String second, boolean nativeOrder) {
-        String result = null;
+        String result;
 
         if (TextUtils.isEmpty(first)) return second;
         if (TextUtils.isEmpty(second)) return first;

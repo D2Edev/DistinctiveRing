@@ -92,7 +92,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                 headerSortByClicked();
             }
         });
-        //header soerOrder part init
+        //header sortOrder part init
         mHeaderSortOrder = (TextView) headerView.findViewById(R.id.header_text_sort_order);
         mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
         mHeaderSortOrder.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +109,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mAdapter.getCursor();
-                //because of header
+                //because of header (list positions qty gets +1)
                 cursor.moveToPosition(position - 1);
                 Integer thisID = cursor.getInt(5);
                 //logic implementation - click one selects, next deselects and so on

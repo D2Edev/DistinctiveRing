@@ -10,12 +10,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.github.d2edev.distinctivering.BuildConfig;
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.util.Utility;
 
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     private Toolbar mToolbar;
     public static final int DR_ACTIVE_NOTIFY = 301;
 
-            //TODO make check telephony is present
             //TODO make marsmallow permissins logic
 
     @Override
@@ -69,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.about_item, null);
         TextView header = (TextView) view.findViewById(R.id.about_header);
-        header.setText(getString(R.string.app_name) + " v." + Utility.getAppVersion(this));
+        header.setText(getString(R.string.app_name)
+                + " v." + Utility.getAppVersion(this)
+                +"\n"
+                +Utility.getLastBuildTime(this));
         TextView linkText = (TextView) view.findViewById(R.id.about_link);
         linkText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +115,23 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     }
 
     @Override
-    public void callAddUI() {
-
+    public void callSettingsUI() {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "callSettingsUI:");
+        }
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.fragment_container, new AppPreferenceFragment(), AppPreferenceFragment.TAG);
+        transaction.addToBackStack(AppPreferenceFragment.TAG);
+        transaction.commit();
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override

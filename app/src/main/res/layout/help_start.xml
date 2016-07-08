@@ -25,7 +25,7 @@
             android:gravity="center"
             android:textColor="@color/my_icons"
             android:textSize="@dimen/font_24"
-            android:text="@string/help_delete_header" />
+            android:text="@string/help_start_header" />
 
         <!-- General info-->
         <TextView
@@ -38,10 +38,20 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="@dimen/listview_small_margin"
             android:fontFamily="sans-serif-condensed"
-            android:text="@string/help_on_delete_screen"
+            android:text="@string/help_on_start_screen"
             android:textColor="@color/my_icons"
             android:textSize="@dimen/font_20" />
 
+        <Switch
+            android:id="@+id/scroll_dialog_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/my_icons"
+            android:textSize="@dimen/font_16"
+            tools:text="@string/show_on_startup_title"
+            />
 
 
         <!-- Help section-->

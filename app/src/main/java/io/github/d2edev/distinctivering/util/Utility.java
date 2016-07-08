@@ -2,6 +2,7 @@ package io.github.d2edev.distinctivering.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,6 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import io.github.d2edev.distinctivering.BuildConfig;
 import io.github.d2edev.distinctivering.R;
@@ -45,12 +49,14 @@ public class Utility {
     public static final int SORT_BY_LAST_NAME = 1;
     public static final int SORT_BY_NUMBER = 2;
     public static final String KEY_RINGER_MODE = "key_ringer_mode";
+    //below should be in sync with name="pref_key_show_on_startup" in strings.xml
+    private static final String KEY_SHOW_STARTUP_MESSAGE = "key_show_on_startup";
 
     /**
      * Helper method to set needed ring status in shared preferences
      *
      * @param context Context from which method is called
-     * @param value   respective setting
+     * @param value   respective app_settings
      */
     public static void setDistinctiveRingEnabled(Context context, boolean value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -62,7 +68,7 @@ public class Utility {
      * Helper method to get ring status from shared preferences
      *
      * @param context Context from which method is called
-     * @return respective setting or <b>false<b/> if key doesn't exist yet
+     * @return respective app_settings or <b>false<b/> if key doesn't exist yet
      */
     public static boolean isDistinctiveRingEnabled(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -130,6 +136,7 @@ public class Utility {
             File fileDir = context.getDir(PIC_DIR, Context.MODE_PRIVATE);
             String defaultPicPath = fileDir.getPath() + File.separator + PIC_DEFAULT_NAME;
             Bitmap defPic = BitmapFactory.decodeResource(context.getResources(), R.raw.ic_person_green);
+            sp.edit().putBoolean(KEY_SHOW_STARTUP_MESSAGE,true);
             sp.edit().putBoolean(KEY_ENABLE_DISTINCTIVE_RING, false).apply();
             if (storeImageasPNG(defPic, defaultPicPath)) {
                 sp.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
@@ -359,6 +366,21 @@ public class Utility {
             }
         }
 
+    public static String getLastBuildTime(Context context){
+        String date="undefined";
+        try{
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
+            ZipFile zf = new ZipFile(ai.sourceDir);
+            ZipEntry ze = zf.getEntry("classes.dex");
+            long time = ze.getTime();
+            SimpleDateFormat sdf= new SimpleDateFormat("dd-MMM-yy HH:mm");
+            date = sdf.format(new java.util.Date(time));
+            zf.close();
+        }catch(Exception e){
+        }
+        return date;
+    }
+
     public static void saveRingerModel(Context context, int ringerMode) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putInt(KEY_RINGER_MODE, ringerMode).apply();
@@ -397,6 +419,16 @@ public class Utility {
             return  true;
         }
 
+    }
+
+    public static void setShowStartupMessage(Context context, boolean show){
+        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_SHOW_STARTUP_MESSAGE,show).apply();
+    }
+
+    public static boolean getShowStartupMessage(Context context){
+        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(KEY_SHOW_STARTUP_MESSAGE,true);
     }
 
     public static boolean isNUmberInList_STUB(Context context, String number){

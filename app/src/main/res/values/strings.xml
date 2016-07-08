@@ -26,7 +26,7 @@
     <string name="contacts_add_dialog_title">Entry from Contacts</string>
     <string name="no_contacts_provider">No contacts app detected.\nInstall any (i.e. standard Google Contacts)\nand try again!</string>
     <string name="no_data_added">No data added! Pls check if number is already on list!</string>
-    <string name="enabled">Ring enabled</string>
+    <string name="ring_enabled">Ring enabled</string>
     <string name="no_records_add">No records. Use Main Screen menu to add some from Contact Book or manually</string>
     <string name="help_on_add_from_contacts">This will launch system contact manager (Google Contacts or similar) in contact selection mode. After selecting contact (and number, if several) result will be returned to dialog for final confirmation or cancellation.</string>
     <string name="help_main_header">Main Screen Help:</string>
@@ -37,4 +37,12 @@
     <string name="help_on_delete_screen">Delete screen presents list of contacts stored. List could be sorted by clicking respective part of it\'s header (left - by first name, second name or number, right - ascending or descending, respectively). Each entry could be selected for deletion by clicking it. Second click deselects back. Changing sort order doesn\'t deselect previously selected items. If list is not empty and at least one entry selected, an action button presented right down, click on which deletes currenly selected records and rebuilds list on records remained. If list is empty or nothing selected then action button is not visible. Clicking on left up back arrow leaves delete screen and switches to main screen.</string>
     <string name="no_pics_provider">No pics app detected.\nInstall any (i.e. standard Google Gallery)\nand try again!</string>
     <string name="no_phone_line">No phone detected, exiting...</string>
+    <string name="show_on_startup_title">Show brief HOWTO at startup</string>
+    <string name="help_start_header">How it works?</string>
+    <string name="help_on_start_screen">Distinctive Ring app lets someone you allow reach you with a loud call even if ring volume set to zero. Of course the matter should be important - that\'s why calling side have to call twice (pls, let you trusted caller know about it!). If in silent mode, first call opens time window (30 sec by default) during which other incoming call rings loud. After that ringer sound settings return to previous (silent state).\nPlease refer to help for main and other screens for details</string>
+    <string name="action_title_settings">Settings</string>
+    <string name="pref_key_show_on_startup" translatable="false">key_show_on_startup</string>
+    <string name="undefined">Undefined</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
 </resources>

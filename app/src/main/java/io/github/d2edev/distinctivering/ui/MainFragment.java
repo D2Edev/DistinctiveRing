@@ -9,14 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationCompat;
@@ -24,8 +21,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,10 +29,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.github.d2edev.distinctivering.BuildConfig;
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
 import io.github.d2edev.distinctivering.db.DataContract;
@@ -62,6 +60,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean mHasRecords;
     private NameNumPicListAdapter mAdapter;
     private BasicActionsListener basicActionsListener;
+
+
+    //TODO finish settings - main help
 
 
     public void setBasicActionsListener(BasicActionsListener basicActionsListener) {
@@ -175,7 +176,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_icon_notify)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.enabled))
+                .setContentText(getString(R.string.ring_enabled))
                 .setContentIntent(notificationIntent);
         Notification notification = builder.build();
         //set flags so notification will be enabled unless "ring off" mode set
@@ -242,6 +243,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
                 break;
             }
+            case R.id.action_main_settings:{
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "settings called: ");
+                }
+                if (basicActionsListener != null) basicActionsListener.callSettingsUI();
+                break;
+            }
             case R.id.action_main_add_item_manual: {
                 showAddDialog(null);
                 break;
@@ -253,6 +261,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void showHelpDialog() {
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
@@ -329,6 +339,41 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onPause();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onResume: " + Utility.getShowStartupMessage(getActivity()));
+        }
+        if(Utility.getShowStartupMessage(getActivity())){
+            showStartDialog();
+        }
+
+    }
+
+    private void showStartDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        View dialogView=getActivity().getLayoutInflater().inflate(R.layout.help_start,null,false);
+        builder
+                .setView(dialogView)
+                .setCancelable(false)
+                .setNegativeButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        Switch dialogSwitch= (Switch) dialogView.findViewById(R.id.scroll_dialog_switch);
+        dialogSwitch.setChecked(Utility.getShowStartupMessage(getActivity()));
+        dialogSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                    Utility.setShowStartupMessage(getActivity(),isChecked);
+
+            }
+        });
+        builder.create().show();
+    }
 
     @Override
     public void dataSetChanged(boolean succes) {

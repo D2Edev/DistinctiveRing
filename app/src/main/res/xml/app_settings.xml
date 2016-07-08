@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="@string/pref_key_show_on_startup"
+        android:title="@string/show_on_startup_title"
+        />
+
+
+</PreferenceScreen>

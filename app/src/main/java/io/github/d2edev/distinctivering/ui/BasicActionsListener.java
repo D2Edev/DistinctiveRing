@@ -8,6 +8,6 @@ package io.github.d2edev.distinctivering.ui;
 
 public interface BasicActionsListener {
     void callDeleteUI();
-    void callAddUI();
+    void callSettingsUI();
     void callMainUI();
 }

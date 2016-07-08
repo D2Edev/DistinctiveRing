@@ -15,14 +15,14 @@ import io.github.d2edev.distinctivering.util.Utility;
  * Created by d2e on 10.06.16.
  * Class which implements logic on receiving calls.
  * Currently I cannot understand the reason why log states audio manager STREAM_RING and ringer mode
- * setting were set to max, phone doesn't make a sound.
+ * app_settings were set to max, phone doesn't make a sound.
  * So working logic will be:
  * if Distinctive ring enambled:
  * after first call end from any allowed number ("trigger" call) we set volume up and mode to NORMAL
  * and start service that waits for defined time window (i.e. one minute) during which any incoming
  * call rings loud with countdown paused during incoming ring(s) in allowed timeframe
  * after defined timeout end (100% timeout done) ringer volume and mode settings return to initial ones
- * if call was picked, we sign-off the service, setting timeout complete 100, which sets ringer
+ * if call was picked, we sign-off the service, app_settings timeout complete 100, which sets ringer
  * volume and mode settings return to initial immediately
  */
 
