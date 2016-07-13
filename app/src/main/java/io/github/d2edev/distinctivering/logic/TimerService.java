@@ -14,9 +14,9 @@ import io.github.d2edev.distinctivering.BuildConfig;
 public class TimerService extends IntentService {
 
     public static final String TAG = "TAG_" + TimerService.class.getSimpleName();
-    public static final String KEY_TOTAL_TIME_SEC = "ktt";
+    public static final String KEY_RUNNING_TIME_SEC = "ktt";
     private static final long STEPS = 10;
-    private static final long DEFAULT_TIME_SEC = 30;
+    private static final int DEFAULT_TIME_SEC = 30;
     private static final long CYCLE_TIME_MSEC = 1000;
     private long mTotalTime;
     private final IBinder mTimeSeviceBinder = new TimeServiceBinder();
@@ -66,10 +66,10 @@ public class TimerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         active = true;
+        mTotalTime = CYCLE_TIME_MSEC * intent.getIntExtra(KEY_RUNNING_TIME_SEC, DEFAULT_TIME_SEC);
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onHandleIntent: service started");
+            Log.d(TAG, "onHandleIntent: service started for " + mTotalTime/CYCLE_TIME_MSEC+ "secs.");
         }
-        mTotalTime = CYCLE_TIME_MSEC * intent.getLongExtra(KEY_TOTAL_TIME_SEC, DEFAULT_TIME_SEC);
         long cycleTime = mTotalTime / STEPS;
         long counter = 0;
         //adding steps to couter until done or until active

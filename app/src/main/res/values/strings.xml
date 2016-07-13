@@ -42,7 +42,12 @@
     <string name="help_on_start_screen">Distinctive Ring app lets someone you allow reach you with a loud call even if ring volume set to zero. Of course the matter should be important - that\'s why calling side have to call twice (pls, let you trusted caller know about it!). If in silent mode, first call opens time window (30 sec by default) during which other incoming call rings loud. After that ringer sound settings return to previous (silent state).\nPlease refer to help for main and other screens for details</string>
     <string name="action_title_settings">Settings</string>
     <string name="pref_key_show_on_startup" translatable="false">key_show_on_startup</string>
+    <string name="pref_key_time_window" translatable="false">key_timewindow</string>
     <string name="undefined">Undefined</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="timewindow_title">Time window duration</string>
+    <string name="pref_summary_time_window">Next call rings loud during, sec.:</string>
+    <string name="secs">sec.</string>
+    <string name="pref_seek_bar_message">Set to %1$d %2$s</string>
 </resources>

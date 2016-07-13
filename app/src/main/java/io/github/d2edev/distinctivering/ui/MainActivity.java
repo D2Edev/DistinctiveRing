@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
             setContentView(R.layout.activity_main);
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
-            callMainUI();
             Utility.firstLaunchPreparations(this);
+            callMainUI();
 
         } else {
             Toast.makeText(this, getString(R.string.no_phone_line), Toast.LENGTH_LONG).show();

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -51,6 +52,9 @@ public class Utility {
     public static final String KEY_RINGER_MODE = "key_ringer_mode";
     //below should be in sync with name="pref_key_show_on_startup" in strings.xml
     private static final String KEY_SHOW_STARTUP_MESSAGE = "key_show_on_startup";
+    //below should be in sync with name="pref_key_time_window" in strings.xml
+    private static final String KEY_TIME_WINDOW = "key_timewindow";
+    public static final int TIME_WINDOW_DEFAULT_VALUE = 30;
 
     /**
      * Helper method to set needed ring status in shared preferences
@@ -98,7 +102,7 @@ public class Utility {
     }
 
     public static boolean isNUmberInList(Context context, String number) {
-        boolean result=false;
+        boolean result = false;
         Cursor cursor = context.getContentResolver()
                 .query(
                         DataContract.PhoneNumber.CONTENT_URI,
@@ -111,10 +115,10 @@ public class Utility {
             do {
 //                Log.d(TAG, "isNUmberInList: cursor position" + cursor.getPosition());
                 if (PhoneNumberUtils.compare(cursor.getString(0), number)) {
-                    result=true;
+                    result = true;
                     break;
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
         return result;
@@ -136,11 +140,13 @@ public class Utility {
             File fileDir = context.getDir(PIC_DIR, Context.MODE_PRIVATE);
             String defaultPicPath = fileDir.getPath() + File.separator + PIC_DEFAULT_NAME;
             Bitmap defPic = BitmapFactory.decodeResource(context.getResources(), R.raw.ic_person_green);
-            sp.edit().putBoolean(KEY_SHOW_STARTUP_MESSAGE,true);
-            sp.edit().putBoolean(KEY_ENABLE_DISTINCTIVE_RING, false).apply();
-            if (storeImageasPNG(defPic, defaultPicPath)) {
-                sp.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
-            }
+            sp.edit()
+                    .putInt(KEY_TIME_WINDOW,TIME_WINDOW_DEFAULT_VALUE)
+                    .putBoolean(KEY_SHOW_STARTUP_MESSAGE, true)
+                    .putBoolean(KEY_ENABLE_DISTINCTIVE_RING, false)
+                    .putBoolean(KEY_FIRST_LAUNCH, false)
+                    .apply();
+            storeImageasPNG(defPic, defaultPicPath);
         }
     }
 
@@ -184,7 +190,7 @@ public class Utility {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         InputStream input = null;
-        byte []imageArray=null;
+        byte[] imageArray = null;
 
         try {
             input = context.getContentResolver().openInputStream(uri);
@@ -197,15 +203,15 @@ public class Utility {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }finally {
-            if(input!=null){
+        } finally {
+            if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        return bitmap;
+            return bitmap;
         }
 
 
@@ -270,6 +276,7 @@ public class Utility {
 
     /**
      * Helper method to store provided bitmap to provided file path as PNG format
+     *
      * @param bitmapImage Bitmap which caontains image
      * @param fileName    String which contains path to file to be saved, incl filename and extension
      * @return true is save is ok, otherwise false
@@ -304,6 +311,7 @@ public class Utility {
      * 0=BY FIRST NAME
      * 1=BY SECOND NAME
      * 2=BY NUMBER
+     *
      * @param context Context from which method is called
      * @return int as index
      */
@@ -325,6 +333,7 @@ public class Utility {
      * 0=BY FIRST NAME
      * 1=BY SECOND NAME
      * 2=BY NUMBER
+     *
      * @param sortIndex int sort type index for allowed number list
      * @return String column name to sort on
      */
@@ -354,29 +363,29 @@ public class Utility {
         return sortAsc ? 0 : 1;
     }
 
-    public static String getAppVersion(Context context){
+    public static String getAppVersion(Context context) {
 
-            String version="undefined";
-            try {
-                version=context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }finally {
-                return  version;
-            }
+        String version = "undefined";
+        try {
+            version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            return version;
         }
+    }
 
-    public static String getLastBuildTime(Context context){
-        String date="undefined";
-        try{
+    public static String getLastBuildTime(Context context) {
+        String date = "undefined";
+        try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
             ZipFile zf = new ZipFile(ai.sourceDir);
             ZipEntry ze = zf.getEntry("classes.dex");
             long time = ze.getTime();
-            SimpleDateFormat sdf= new SimpleDateFormat("dd-MMM-yy HH:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy HH:mm");
             date = sdf.format(new java.util.Date(time));
             zf.close();
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return date;
     }
@@ -387,51 +396,56 @@ public class Utility {
     }
 
     public static int getSavedRingerMode(Context context) {
-        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(KEY_RINGER_MODE, AudioManager.RINGER_MODE_SILENT);
     }
 
-    public static byte[] inputStreamToByteArray(InputStream is){
+    public static byte[] inputStreamToByteArray(InputStream is) {
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
-        byte[] byteArray=null;
+        byte[] byteArray = null;
         byte[] data = new byte[512];
         try {
             while ((nRead = is.read(data, 0, data.length)) != -1) {
                 buffer.write(data, 0, nRead);
             }
-        buffer.flush();
+            buffer.flush();
             byteArray = buffer.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             return byteArray;
         }
 
     }
 
-    public static boolean isTelephonyAvailable(Context context){
-        int type = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getPhoneType();
-        if (type==TelephonyManager.PHONE_TYPE_NONE){
+    public static boolean isTelephonyAvailable(Context context) {
+        int type = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getPhoneType();
+        if (type == TelephonyManager.PHONE_TYPE_NONE) {
             return false;
-        }else{
-            return  true;
+        } else {
+            return true;
         }
 
     }
 
-    public static void setShowStartupMessage(Context context, boolean show){
-        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(KEY_SHOW_STARTUP_MESSAGE,show).apply();
+    public static void setShowStartupMessage(Context context, boolean show) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_SHOW_STARTUP_MESSAGE, show).apply();
     }
 
-    public static boolean getShowStartupMessage(Context context){
-        SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(KEY_SHOW_STARTUP_MESSAGE,true);
+    public static boolean getShowStartupMessage(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(KEY_SHOW_STARTUP_MESSAGE, true);
     }
 
-    public static boolean isNUmberInList_STUB(Context context, String number){
+    public static boolean isNUmberInList_STUB(Context context, String number) {
         return true;
+    }
+
+    public static int getTimeWindow(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(KEY_TIME_WINDOW, TIME_WINDOW_DEFAULT_VALUE);
     }
 }

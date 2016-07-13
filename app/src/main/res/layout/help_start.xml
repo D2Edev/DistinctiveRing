@@ -50,7 +50,7 @@
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/my_icons"
             android:textSize="@dimen/font_16"
-            tools:text="@string/show_on_startup_title"
+            android:text="@string/show_on_startup_title"
             />
 
 

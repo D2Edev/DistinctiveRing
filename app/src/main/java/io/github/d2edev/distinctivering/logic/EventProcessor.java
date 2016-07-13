@@ -142,6 +142,11 @@ public class EventProcessor implements IncomingCallListener, TimerService.TimerS
                 am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 am.setStreamVolume(AudioManager.STREAM_RING, volMax, 0);
                 Intent startTimerService = new Intent(context, TimerService.class);
+                int sec=Utility.getTimeWindow(mContext);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "pref time window, sec: "+sec);
+                }
+                startTimerService.putExtra(TimerService.KEY_RUNNING_TIME_SEC,sec);
                 mContext.startService(startTimerService);
                 Intent bindTimer = new Intent(context, TimerService.class);
                 mContext.bindService(bindTimer, mTimerConnection, Context.BIND_AUTO_CREATE);

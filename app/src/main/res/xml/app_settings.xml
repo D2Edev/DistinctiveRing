@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+>
     <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="@string/pref_key_show_on_startup"
         android:title="@string/show_on_startup_title"
         />
+
+   <io.github.d2edev.distinctivering.ui.SeekBarDialogPreference
+       android:key="@string/pref_key_time_window"
+       android:title="@string/timewindow_title"
+       android:defaultValue="30"
+       android:max="120"
+       app:min="20"
+       app:unit="@string/secs"
+       android:persistent="true"
+
+       />
 
 
 </PreferenceScreen>
