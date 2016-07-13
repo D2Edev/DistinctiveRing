@@ -54,6 +54,7 @@ public class TimerService extends IntentService {
         super(TAG);
     }
 
+    //sets listener tat listens to time service events
     public void setTimerServiceListener(TimerServiceListener listener) {
         this.listener = listener;
     }
@@ -66,13 +67,14 @@ public class TimerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         active = true;
+        //get running time value , if exists
         mTotalTime = CYCLE_TIME_MSEC * intent.getIntExtra(KEY_RUNNING_TIME_SEC, DEFAULT_TIME_SEC);
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onHandleIntent: service started for " + mTotalTime/CYCLE_TIME_MSEC+ "secs.");
         }
         long cycleTime = mTotalTime / STEPS;
         long counter = 0;
-        //adding steps to couter until done or until active
+        //counting until done or until active
         while (counter < STEPS && active) {
             //freeze if got pause signal
             synchronized (this) {

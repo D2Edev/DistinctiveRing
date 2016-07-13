@@ -50,4 +50,6 @@
     <string name="pref_summary_time_window">Next call rings loud during, sec.:</string>
     <string name="secs">sec.</string>
     <string name="pref_seek_bar_message">Set to %1$d %2$s</string>
+    <string name="perm_read_contacts_desc">Currently application does not have access to Contacts, please grant it to be able to add some to Distinctive Ring list. If you choose YES, next dialog will appear, where you must confirm your choice. Do you allow it?</string>
+    <string name="perm_title_general">Permission needed</string>
 </resources>

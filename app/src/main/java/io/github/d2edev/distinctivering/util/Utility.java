@@ -390,7 +390,7 @@ public class Utility {
         return date;
     }
 
-    public static void saveRingerModel(Context context, int ringerMode) {
+    public static void saveRingerMode(Context context, int ringerMode) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putInt(KEY_RINGER_MODE, ringerMode).apply();
     }

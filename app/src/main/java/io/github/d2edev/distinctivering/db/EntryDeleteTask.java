@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import java.io.File;
 
@@ -45,15 +46,15 @@ public class EntryDeleteTask extends AsyncTask<Integer, Void, Integer> {
             }
             numCursor.close();
             //checks whether current number is the last for person
-            String selection=DataContract.PhoneNumber.COLUMN_KEY_PERSON+"=?";
-            String []selectionArgs=new String[]{""+personID};
-            numCursor=mContext.getContentResolver().query(
+            String selection = DataContract.PhoneNumber.COLUMN_KEY_PERSON + "=?";
+            String[] selectionArgs = new String[]{"" + personID};
+            numCursor = mContext.getContentResolver().query(
                     DataContract.PhoneNumber.CONTENT_URI,
                     null,
                     selection,
                     selectionArgs,
                     null);
-            if(numCursor.getCount()==1)lastNumForPerson=true;
+            if (numCursor.getCount() == 1) lastNumForPerson = true;
             numCursor.close();
             //deletes number record from phone table
             deletedRows += mContext.getContentResolver()
@@ -63,7 +64,7 @@ public class EntryDeleteTask extends AsyncTask<Integer, Void, Integer> {
                             null);
             //if deleted ok, and number was last - delete pic
             if (deletedRows > 0 && personID > -1 && lastNumForPerson) {
-                Uri personURI=DataContract.Person.builPersonUri(personID);
+                Uri personURI = DataContract.Person.builPersonUri(personID);
                 String[] projectionPicPath = new String[]{DataContract.Person.COLUMN_PIC_PATH};
                 Cursor picPathCursor = mContext.getContentResolver().query(
                         personURI,
@@ -72,13 +73,15 @@ public class EntryDeleteTask extends AsyncTask<Integer, Void, Integer> {
                         null,
                         null
                 );
-                if(picPathCursor!=null&&picPathCursor.moveToFirst()){
+                if (picPathCursor != null && picPathCursor.moveToFirst()) {
                     String picPath = picPathCursor.getString(0);
-                    File file=new File(picPath);
-                    file.delete();
+                    if (!TextUtils.isEmpty(picPath)) {
+                        File file = new File(picPath);
+                        file.delete();
+                    }
                 }
                 picPathCursor.close();
-                mContext.getContentResolver().delete(personURI,null,null);
+                mContext.getContentResolver().delete(personURI, null, null);
             }
         }
 

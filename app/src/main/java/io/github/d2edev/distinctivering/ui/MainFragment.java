@@ -1,23 +1,27 @@
 package io.github.d2edev.distinctivering.ui;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -40,6 +44,7 @@ import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
 import io.github.d2edev.distinctivering.db.DataContract;
 import io.github.d2edev.distinctivering.logic.DataSetWatcher;
+import io.github.d2edev.distinctivering.logic.MyApp;
 import io.github.d2edev.distinctivering.util.Utility;
 
 
@@ -49,6 +54,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final int ALLOWEDLIST_CURSOR_LOADER = 0;
     public static final int REQUEST_SELECT_PHONE_NUMBER = 101;
     private static final int REQUEST_SHOW_DR_NOTIFICATION = 201;
+    private static final int REQUEST_GRANT_CONTACT_ACCESS = 301;
     private FloatingActionButton mFab;
     private String[] mSortBy;
     private String[] mSortOrder;
@@ -60,9 +66,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean mHasRecords;
     private NameNumPicListAdapter mAdapter;
     private BasicActionsListener basicActionsListener;
-
-
-    //TODO finish settings - main help
 
 
     public void setBasicActionsListener(BasicActionsListener basicActionsListener) {
@@ -84,7 +87,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mSortAsc = Utility.isSortOrderAscending(getActivity());
 
 
-
     }
 
     @Override
@@ -100,10 +102,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             }
         });
-        if(Utility.isDistinctiveRingEnabled(getActivity())){
+        if (Utility.isDistinctiveRingEnabled(getActivity())) {
             setNotificationOn();
             mFab.setImageResource(R.drawable.ic_volume_up_white);
-        }else{
+        } else {
             mFab.setImageResource(R.drawable.ic_volume_off_white);
         }
         mListView = (ListView) rootView.findViewById(R.id.listview);
@@ -243,7 +245,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
                 break;
             }
-            case R.id.action_main_settings:{
+            case R.id.action_main_settings: {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "settings called: ");
                 }
@@ -263,10 +265,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
-
     private void showHelpDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-        View dialogView=getActivity().getLayoutInflater().inflate(R.layout.help_main,null,false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.help_main, null, false);
         builder
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
@@ -281,13 +282,60 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void showContactsToPick() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.no_contacts_provider), Toast.LENGTH_SHORT).show();
+        if(hasSystemPermission(Manifest.permission.READ_CONTACTS)){
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.no_contacts_provider), Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            showPermissionRequestDialog(
+                    Manifest.permission.READ_CONTACTS,
+                    getString(R.string.perm_read_contacts_desc),
+                    REQUEST_GRANT_CONTACT_ACCESS
+                    );
         }
+    }
+
+    private void showPermissionRequestDialog(final String permission, String permissionNeedText, int reqCode) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        builder
+                .setTitle(getString(R.string.perm_title_general))
+                .setMessage(permissionNeedText)
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(new String[]{permission},REQUEST_GRANT_CONTACT_ACCESS);
+                    }
+                }).create().show();
+    }
+
+    //we do not request permissions in fragment simultaneously
+    //so, returned arrays length is always 1
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_GRANT_CONTACT_ACCESS:{
+                if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    showContactsToPick();
+                }
+            }
+        }
+
+    }
+
+    private boolean hasSystemPermission(String permission) {
+        return ContextCompat.checkSelfPermission(getActivity(), permission)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -313,9 +361,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mHasRecords = cursor.getCount() > 0 ? true : false;
         //enable or disable Floating ActBar visibility and general DistRing settings depending on
         //recors existence
-        if(mHasRecords){
+        if (mHasRecords) {
             mFab.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             //save "disable" to prefs
             Utility.setDistinctiveRingEnabled(getActivity(), false);
             //set "off image" to fab
@@ -345,15 +393,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onResume: " + Utility.getShowStartupMessage(getActivity()));
         }
-        if(Utility.getShowStartupMessage(getActivity())){
-            showStartDialog();
+        if (Utility.getShowStartupMessage(getActivity())) {
+            //skip instance check
+            MyApp app = (MyApp) getActivity().getApplication();
+            if (!app.isSplashShown()) {
+                showStartDialog();
+                app.setSplashShown(true);
+            }
         }
 
     }
 
     private void showStartDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-        View dialogView=getActivity().getLayoutInflater().inflate(R.layout.help_start,null,false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.help_start, null, false);
         builder
                 .setView(dialogView)
                 .setCancelable(false)
@@ -363,12 +416,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         dialog.cancel();
                     }
                 });
-        Switch dialogSwitch= (Switch) dialogView.findViewById(R.id.scroll_dialog_switch);
+        Switch dialogSwitch = (Switch) dialogView.findViewById(R.id.scroll_dialog_switch);
         dialogSwitch.setChecked(Utility.getShowStartupMessage(getActivity()));
         dialogSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                    Utility.setShowStartupMessage(getActivity(),isChecked);
+                Utility.setShowStartupMessage(getActivity(), isChecked);
 
             }
         });
@@ -454,6 +507,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             showAddDialog(bundle);
         }
     }
+
 
 
 }

@@ -47,7 +47,6 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
                     mSeekBarDialogPreference.getDefaultValue(),
                     mSeekBarDialogPreference.getMaxValue()
             );
-//            TODO finish units
             mUnit = mSeekBarDialogPreference.getUnit();
             mKey = mSeekBarDialogPreference.getKey();
         }

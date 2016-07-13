@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     public static final int DR_ACTIVE_NOTIFY = 301;
 
             //TODO make marsmallow permissins logic
+    //TODO javadoc!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
             setContentView(R.layout.activity_main);
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
+
             Utility.firstLaunchPreparations(this);
             callMainUI();
 
