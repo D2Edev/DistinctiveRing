@@ -30,9 +30,8 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     private Toolbar mToolbar;
     public static final int DR_ACTIVE_NOTIFY = 301;
     private static final int REQUEST_GRANT_PHONE_STATE_ACCESS = 101;
-
-    //TODO make marsmallow permissins logic
-    //TODO javadoc!
+    //TODO finalize marsmallow permissins logic
+    //TODO comments!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +44,10 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
             Utility.firstLaunchPreparations(this);
             //check phone access before launch main UI
             if (Utility.hasSystemPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+                //show UI if access granted
                 callMainUI();
-
             } else {
+                //show dialog
                 Utility.showPermissionRequestDialog(
                         this,
                         getString(R.string.perm_read_phone_state_desc),
@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,9 +182,15 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         FragmentTransaction transaction = fm.beginTransaction();
         MainFragment mf = new MainFragment();
         mf.setBasicActionsListener(this);
-        if (fm.getFragments()==null) {
+        if (fm.getFragments() == null) {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "getFragments: null");
+            }
             transaction.add(R.id.fragment_container, mf, MainFragment.TAG);
         } else {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "getFragments: not null");
+            }
             transaction.replace(R.id.fragment_container, mf, MainFragment.TAG);
 
         }
@@ -189,18 +199,19 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         ActionBar ab = getSupportActionBar();
         if (ab != null) ab.setDisplayHomeAsUpEnabled(false);
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             mToolbar.setNavigationOnClickListener(null);
         }
-        super.onBackPressed();
+
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_GRANT_PHONE_STATE_ACCESS: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -1,5 +1,9 @@
 package io.github.d2edev.distinctivering.ui;
-
+/**
+ * Created by d2e on nobody cares when
+ * UI logic whеn deleting records
+ *
+ */
 
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -57,7 +61,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        //prepare to operati with sorting
+        //prepare to sort operations (values set, etc)
         mSortBy = getResources().getStringArray(R.array.sortBy);
         mSortOrder = getResources().getStringArray(R.array.sortOrder);
         mSortTypeIndex = Utility.getSortTypeIndex(getActivity());
@@ -71,8 +75,8 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_delete, container, false);
+        //find FAB and set it action
         mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        //set FAB action
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,13 +116,15 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
                 //because of header (list positions qty gets +1)
                 cursor.moveToPosition(position - 1);
                 Integer thisID = cursor.getInt(5);
-                //logic implementation - click one selects, next deselects and so on
+                //logic implementation - one click selects, next deselects and so on
                 if (mAdapter.getSelectedNumIDs().contains(thisID)) {
                     mAdapter.getSelectedNumIDs().remove(thisID);
                 } else {
                     mAdapter.getSelectedNumIDs().add(thisID);
                 }
+                //have recs to delete so show FAB
                 verifyFabAccess();
+                //self-explained :)
                 mAdapter.notifyDataSetChanged();
 
             }
@@ -149,6 +155,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
 
     }
 
+    //cycles criteria list is sorted by
     private void headerSortByClicked() {
         if (mSortTypeIndex == 2) {
             mSortTypeIndex = 0;
@@ -165,7 +172,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
         String sortOrder = Utility.getSortColumnName(mSortTypeIndex) + (mSortAsc ? " ASC" : " DESC");
         Bundle bundle = new Bundle();
         bundle.putString(KEY_SORT_ORDER, sortOrder);
-        //sets name presentation
+        //sets the way name is shown
         mAdapter.setNameNativeOrder(mSortTypeIndex == Utility.SORT_BY_LAST_NAME ? false : true);
         //rebuilds loader
         if (getLoaderManager().getLoader(LIST_CURSOR_LOADER) != null)
@@ -241,7 +248,7 @@ public class DeleteFragment extends Fragment implements LoaderManager.LoaderCall
         super.onPause();
     }
 
-//called after selected entries were deleted
+//called back after selected entries were deleted
     @Override
     public void dataSetChanged(boolean success) {
         //nullify list of selected IDs in adapter

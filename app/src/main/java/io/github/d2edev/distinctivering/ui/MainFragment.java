@@ -160,6 +160,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
+    //TODO "another" MainActivity starts when clicked on notification with app on foreground?
+
     private void unsetNotification() {
         //cancel notification
         NotificationManagerCompat.from(getActivity()).cancel(MainActivity.DR_ACTIVE_NOTIFY);
