@@ -50,6 +50,11 @@
     <string name="pref_summary_time_window">Next call rings loud during, sec.:</string>
     <string name="secs">sec.</string>
     <string name="pref_seek_bar_message">Set to %1$d %2$s</string>
-    <string name="perm_read_contacts_desc">Currently application does not have access to Contacts, please grant it to be able to add some to Distinctive Ring list. If you choose YES, next dialog will appear, where you must confirm your choice. Do you allow it?</string>
+    <string name="perm_read_contacts_desc">Currently application does not have access to Contacts, please grant it to be able to add some to Distinctive Ring list. If you choose YES, a dialog will appear, where you must confirm your choice. Do you allow it?</string>
     <string name="perm_title_general">Permission needed</string>
+    <string name="perm_read_ext_stor_desc">Currently application does not have access to files on ext storage, please grant it to be able to use pictures you have on your device as user avatars. If you choose YES, a dialog will appear, where you must confirm your choice. Do you allow it?</string>
+    <string name="perm_read_phone_state_desc">Currently application does not have access to phone status, please grant it, so application will be able to read incoming call numbers which is needed for it\'s work. If you choose YES, a dialog will appear, where you must confirm your choice. If you choose NO application will stop as it uncapable to function properly.Do you allow it?</string>
+    <string name="perm_refused">Permission not granted, operation skipped</string>
+    <string name="perm_refused_read_phone">Permission not granted, exiting...</string>
+    <string name="perm_granted_read_phone">Permission granted, pls start app again!</string>
 </resources>

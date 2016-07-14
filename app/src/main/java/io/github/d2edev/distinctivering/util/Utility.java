@@ -1,6 +1,7 @@
 package io.github.d2edev.distinctivering.util;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +12,8 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -447,5 +450,22 @@ public class Utility {
     public static int getTimeWindow(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(KEY_TIME_WINDOW, TIME_WINDOW_DEFAULT_VALUE);
+    }
+
+    public static boolean hasSystemPermission(Context context, String permission) {
+        return ContextCompat.checkSelfPermission(context, permission)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static void showPermissionRequestDialog(
+            Context context, String permissionNeedText,
+            DialogInterface.OnClickListener clickOKlistener,
+            DialogInterface.OnClickListener clickNOlistener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder
+                .setTitle(context.getString(R.string.perm_title_general))
+                .setMessage(permissionNeedText)
+                .setNegativeButton(android.R.string.no, clickNOlistener)
+                .setPositiveButton(android.R.string.yes, clickOKlistener).create().show();
     }
 }

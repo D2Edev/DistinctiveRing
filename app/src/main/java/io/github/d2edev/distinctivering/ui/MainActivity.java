@@ -1,9 +1,13 @@
 package io.github.d2edev.distinctivering.ui;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -25,20 +29,52 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     public static final String TAG = "TAG_" + MainActivity.class.getSimpleName();
     private Toolbar mToolbar;
     public static final int DR_ACTIVE_NOTIFY = 301;
+    private static final int REQUEST_GRANT_PHONE_STATE_ACCESS = 101;
 
-            //TODO make marsmallow permissins logic
+    //TODO make marsmallow permissins logic
     //TODO javadoc!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //launch if phone module available only
         if (Utility.isTelephonyAvailable(this)) {
             setContentView(R.layout.activity_main);
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
-
             Utility.firstLaunchPreparations(this);
-            callMainUI();
+            //check phone access before launch main UI
+            if (Utility.hasSystemPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+                callMainUI();
+
+            } else {
+                Utility.showPermissionRequestDialog(
+                        this,
+                        getString(R.string.perm_read_phone_state_desc),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                                    requestPermissions(
+                                            new String[]{Manifest.permission.READ_PHONE_STATE},
+                                            REQUEST_GRANT_PHONE_STATE_ACCESS
+                                    );
+                            }
+                        },
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        getString(R.string.perm_refused_read_phone),
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                                finish();
+                            }
+                        }
+                );
+            }
 
         } else {
             Toast.makeText(this, getString(R.string.no_phone_line), Toast.LENGTH_LONG).show();
@@ -74,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         TextView header = (TextView) view.findViewById(R.id.about_header);
         header.setText(getString(R.string.app_name)
                 + " v." + Utility.getAppVersion(this)
-                +"\n"
-                +Utility.getLastBuildTime(this));
+                + "\n"
+                + Utility.getLastBuildTime(this));
         TextView linkText = (TextView) view.findViewById(R.id.about_link);
         linkText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +178,12 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         FragmentTransaction transaction = fm.beginTransaction();
         MainFragment mf = new MainFragment();
         mf.setBasicActionsListener(this);
-        transaction.replace(R.id.fragment_container, mf, MainFragment.TAG);
+        if (fm.getFragments()==null) {
+            transaction.add(R.id.fragment_container, mf, MainFragment.TAG);
+        } else {
+            transaction.replace(R.id.fragment_container, mf, MainFragment.TAG);
+
+        }
         transaction.commit();
     }
 
@@ -157,6 +198,22 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        switch (requestCode) {
+            case REQUEST_GRANT_PHONE_STATE_ACCESS: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, getString(R.string.perm_granted_read_phone), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, getString(R.string.perm_refused_read_phone), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+            break;
+        }
+    }
 }
 
 

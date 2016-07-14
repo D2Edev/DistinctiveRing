@@ -1,10 +1,11 @@
 package io.github.d2edev.distinctivering.ui;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import io.github.d2edev.distinctivering.R;
 import io.github.d2edev.distinctivering.db.DataContract;
 import io.github.d2edev.distinctivering.db.EntrySaveTask;
@@ -32,7 +35,7 @@ import io.github.d2edev.distinctivering.logic.DataSetWatcher;
 import io.github.d2edev.distinctivering.util.Utility;
 
 /**
- * Implements adding new entry with name,number, pictutre
+ * Implements adding new entry with name,number, picture
  * manually added or selected from contacts,
  * does needed check for cases number/name already exist
  * in db
@@ -44,6 +47,7 @@ public class AddDialogFragment extends DialogFragment {
     public static final int MIN_NUM_LENGTH = 6;
     public static final int MANUAL_PIC_SELECTION = 1;
     private static final String KEY_OK_ENABLED = "OK_ENABLED";
+    private static final int REQUEST_GRANT_READ_EXT_STORAGE = 101;
     private Button mPositiveButton;
     private View mDialogView;
     private EditText mFirstNameInput;
@@ -68,7 +72,6 @@ public class AddDialogFragment extends DialogFragment {
         Log.d(TAG, "onCreateDialog: ");
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         //get inflanter and inflate custom layout
-        // Pass null as the parent view because we dont attach
         LayoutInflater inflater = getActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_add, null);
         dialogBuilder
@@ -76,7 +79,7 @@ public class AddDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.dialog_add_entry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //if OK cliced - save data
+                        //if OK clicked - save data
                         addEntry();
                     }
                 })
@@ -103,11 +106,14 @@ public class AddDialogFragment extends DialogFragment {
             tmp=String.valueOf(mLastNameInput.getText());
             //same for last name
             if(!TextUtils.isEmpty(tmp)) { bundle.putString(DataContract.KEY_LAST_NAME,tmp );}
+            //phone number is obligatory
             bundle.putString(DataContract.KEY_NUMBER, String.valueOf(mNumberInput.getText()));
             bundle.putParcelable(DataContract.KEY_IMAGE_BITMAP, picBitmap);
         }
         EntrySaveTask task = new EntrySaveTask(getActivity());
-        task.setmDataSetWatcher((DataSetWatcher) getActivity().getSupportFragmentManager().findFragmentByTag(MainFragment.TAG));
+        task.setDataSetWatcher((DataSetWatcher) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentByTag(MainFragment.TAG));
         task.execute(bundle);
 
     }
@@ -118,6 +124,7 @@ public class AddDialogFragment extends DialogFragment {
 
     @Override
     public void onResume() {
+        super.onResume();
         //get controls
         mPositiveButton = ((AlertDialog) this.getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
         mFirstNameInput = (EditText) mDialogView.findViewById(R.id.dialog_first_name);
@@ -129,7 +136,7 @@ public class AddDialogFragment extends DialogFragment {
         //from Contact PICK, not for manual input
         if(mBundle==null){
             header.setText(getString(R.string.manual_add_dialog_title));
-            //show default pic if flag was not changed for other pic
+            //show default pic if flag was not changed (means no custom pic set)
             if (bShowDefaultPic) mUserPic.setImageResource(R.drawable.ic_person_green);
             //enable or disable save button?
             checkOkButton();
@@ -146,6 +153,7 @@ public class AddDialogFragment extends DialogFragment {
             mNumberInput.setText(mBundle.getString(DataContract.KEY_NUMBER));
             mNumberInput.setEnabled(false);
             mPositiveButton.setEnabled(true);
+            //if bundle contains picture - use it for contact being processed
             if (mBundle.containsKey(DataContract.KEY_IMAGE_BITMAP)){
                 Parcelable tmp=mBundle.getParcelable(DataContract.KEY_IMAGE_BITMAP);
                 if(tmp instanceof Bitmap){
@@ -185,7 +193,7 @@ public class AddDialogFragment extends DialogFragment {
         });
 
 
-        super.onResume();
+
         mLastNameInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -237,16 +245,45 @@ public class AddDialogFragment extends DialogFragment {
     }
 
     private void supposePictureSelection() {
-        //start implicit intent to get pic
+        //check permissions
+        if(Utility.hasSystemPermission(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)){
+            //start implicit intent to get pic
 
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
-        startActivityForResult(pickPhoto, MANUAL_PIC_SELECTION);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.no_pics_provider), Toast.LENGTH_SHORT).show();
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(pickPhoto, MANUAL_PIC_SELECTION);
+            } else {
+                Toast.makeText(
+                        getActivity(),
+                        getString(R.string.no_pics_provider),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+            builder
+                    .setTitle(getString(R.string.perm_title_general))
+                    .setMessage(getString(R.string.perm_read_ext_stor_desc))
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    REQUEST_GRANT_READ_EXT_STORAGE
+                            );
+                        }
+                    }).create().show();
         }
+
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
@@ -262,7 +299,9 @@ public class AddDialogFragment extends DialogFragment {
                     //downsample selected bitmap and show it as user pic
                     picBitmap = Utility.decodeSampledBitmapFromUri(imageUri, getActivity(), 50, 50);
                     if (picBitmap != null) {
-                        Log.d(TAG, "onActivityResult: got bitmap h; " + picBitmap.getHeight() + " w:" + picBitmap.getWidth());
+                        Log.d(TAG, "onActivityResult: got bitmap h; "
+                                + picBitmap.getHeight()
+                                + " w:" + picBitmap.getWidth());
                         mUserPic.setImageBitmap(picBitmap);
                         bShowDefaultPic = false;
                     }
@@ -300,5 +339,20 @@ public class AddDialogFragment extends DialogFragment {
     public void onPause() {
         super.onPause();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        switch (requestCode){
+            case REQUEST_GRANT_READ_EXT_STORAGE:{
+                if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    supposePictureSelection();
+                }else{
+                    Toast.makeText(getActivity(), getString(R.string.perm_refused), Toast.LENGTH_SHORT).show();
+                }
+            }
+        break;
+        }
     }
 }

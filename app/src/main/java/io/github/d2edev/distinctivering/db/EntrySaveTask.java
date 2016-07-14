@@ -157,7 +157,7 @@ public class EntrySaveTask extends AsyncTask<Bundle, Void, Void> {
             mDataSetWatcher.dataSetChanged(mAllTaskQty == mDoneTaskQty);
     }
 
-    public void setmDataSetWatcher(DataSetWatcher mDataSetWatcher) {
+    public void setDataSetWatcher(DataSetWatcher mDataSetWatcher) {
         this.mDataSetWatcher = mDataSetWatcher;
     }
 }

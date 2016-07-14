@@ -21,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -282,7 +281,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void showContactsToPick() {
-        if(hasSystemPermission(Manifest.permission.READ_CONTACTS)){
+        if (Utility.hasSystemPermission(getContext(), Manifest.permission.READ_CONTACTS)) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -290,52 +289,50 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             } else {
                 Toast.makeText(getActivity(), getString(R.string.no_contacts_provider), Toast.LENGTH_SHORT).show();
             }
-        }else{
-            showPermissionRequestDialog(
-                    Manifest.permission.READ_CONTACTS,
+        } else {
+            Utility.showPermissionRequestDialog(
+                    getActivity(),
                     getString(R.string.perm_read_contacts_desc),
-                    REQUEST_GRANT_CONTACT_ACCESS
-                    );
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MainFragment.this.requestPermissions(
+                                    new String[]{Manifest.permission.READ_CONTACTS},
+                                    REQUEST_GRANT_CONTACT_ACCESS
+                            );
+                        }
+                    },
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            Toast.makeText(
+                                    getActivity(),
+                                    getString(R.string.perm_refused),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
         }
     }
 
-    private void showPermissionRequestDialog(final String permission, String permissionNeedText, int reqCode) {
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-        builder
-                .setTitle(getString(R.string.perm_title_general))
-                .setMessage(permissionNeedText)
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(new String[]{permission},REQUEST_GRANT_CONTACT_ACCESS);
-                    }
-                }).create().show();
-    }
 
     //we do not request permissions in fragment simultaneously
     //so, returned arrays length is always 1
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_GRANT_CONTACT_ACCESS:{
-                if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        switch (requestCode) {
+            case REQUEST_GRANT_CONTACT_ACCESS: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showContactsToPick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.perm_refused), Toast.LENGTH_SHORT).show();
                 }
             }
+            break;
         }
 
-    }
-
-    private boolean hasSystemPermission(String permission) {
-        return ContextCompat.checkSelfPermission(getActivity(), permission)
-                == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -507,7 +504,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             showAddDialog(bundle);
         }
     }
-
 
 
 }
