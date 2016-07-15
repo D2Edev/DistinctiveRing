@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SeekBarDialogPreference">
-        <attr name="min" format="integer"/>
-        <attr name="step" format="integer"/>
-        <attr name="unit" format="string"/>
+        <attr name="minValue" format="integer"/>
+        <attr name="maxValue" format="integer"/>
+        <attr name="defValue" format="integer"/>
+        <!-- step should be positive only -->
+        <attr name="stepsNumber" format="integer"/>
+        <attr name="unitName" format="string"/>
     </declare-styleable>
 </resources>

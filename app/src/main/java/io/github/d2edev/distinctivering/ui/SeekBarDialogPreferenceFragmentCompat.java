@@ -3,7 +3,6 @@ package io.github.d2edev.distinctivering.ui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.view.View;
@@ -21,14 +20,15 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
     private SeekBar mSeekBar;
     private TextView mValueView;
     private SeekBarDialogPreference mSeekBarDialogPreference;
-    private float mMin = 0, mMax = 100, mDefault = 50;
+    private int mMin=0, mMax = 100, mDefault = 50;
+    int mStepQty = SeekBarDialogPreference.MAX_STEP_QTY;
     private String mUnit, mKey;
     private int mSavedValue, mCurrentValue;
 
     @Override
     public void onDialogClosed(boolean b) {
-        if(!b)return;
-        if(mSeekBarDialogPreference.shouldPersist()){
+        if (!b) return;
+        if (mSeekBarDialogPreference.shouldPersist()) {
             mSeekBarDialogPreference.persistInt(mCurrentValue);
         }
         mSeekBarDialogPreference.notifyChanged();
@@ -42,18 +42,16 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
         mValueView = (TextView) view.findViewById(R.id.dialog_seek_bar_value_text);
 
         if (mSeekBarDialogPreference != null) {
-            verifySeekBarSettings(
-                    mSeekBarDialogPreference.getMinValue(),
-                    mSeekBarDialogPreference.getDefaultValue(),
-                    mSeekBarDialogPreference.getMaxValue()
-            );
+            mMin = mSeekBarDialogPreference.getMinValue();
+            mDefault = mSeekBarDialogPreference.getDefaultValue();
+            mMax = mSeekBarDialogPreference.getMaxValue();
             mUnit = mSeekBarDialogPreference.getUnit();
             mKey = mSeekBarDialogPreference.getKey();
+            mStepQty = mSeekBarDialogPreference.getStepQty();
         }
 
-
         mSavedValue = getSavedValue(mKey);
-        mSeekBar.setProgress(convertValueToProgress(mSavedValue));
+        mSeekBar.setProgress(convertValueToProgress(mSavedValue, mStepQty));
         mSeekBar.setOnSeekBarChangeListener(this);
         mValueView.setText(" " + mSavedValue + " " + mUnit);
 
@@ -63,14 +61,6 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
     private int getSavedValue(String mKey) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         return sp.getInt(mKey, (int) mDefault);
-    }
-
-    private void verifySeekBarSettings(int minValue, int defaultValue, int maxValue) {
-        if (minValue <= defaultValue && minValue < maxValue && defaultValue <= maxValue) {
-            mMin = minValue;
-            mDefault = defaultValue;
-            mMax = maxValue;
-        }
     }
 
 
@@ -85,7 +75,7 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mCurrentValue = convertProgressToValue(progress);
+        mCurrentValue = convertProgressToValue(progress, mStepQty);
         mValueView.setText(" " + mCurrentValue + " " + mUnit);
     }
 
@@ -107,17 +97,17 @@ public class SeekBarDialogPreferenceFragmentCompat extends PreferenceDialogFragm
 
     }
 
-    private int convertValueToProgress(int value) {
-        float step = (mMax - mMin) / 100;
-        return (int) ((value - mMin) / step);
+    private int convertValueToProgress(int value, int stepQty) {
+        float stepValue = (mMax - mMin) / (stepQty*1.0F);
+        int steps=(int)(value/stepValue);
+        return steps*100/stepQty;
     }
 
-    private int convertProgressToValue(int progress) {
-        float step = (mMax - mMin) / 100;
-        return (int) (mMin + progress * step);
+    private int convertProgressToValue(int progress, int stepQty) {
+        float stepValue = (mMax - mMin) / (stepQty*1.0F);
+        int steps=progress*stepQty/100;
+        return (int) (mMin + steps * stepValue);
     }
-
-
 
 
 }

@@ -20,7 +20,7 @@ public class PhoneEventReceiver extends BroadcastReceiver {
 
     private IncomingCallListener incomingCallListener;
 
-    PhoneEventReceiver() {
+  public PhoneEventReceiver() {
         //on class init we  connect to interface
 
         incomingCallListener = EventProcessor.getInstance();

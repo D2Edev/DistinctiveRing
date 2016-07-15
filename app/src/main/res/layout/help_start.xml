@@ -42,7 +42,7 @@
             android:textColor="@color/my_icons"
             android:textSize="@dimen/font_20" />
 
-        <Switch
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/scroll_dialog_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -12,12 +12,12 @@
    <io.github.d2edev.distinctivering.ui.SeekBarDialogPreference
        android:key="@string/pref_key_time_window"
        android:title="@string/timewindow_title"
-       android:defaultValue="30"
-       android:max="120"
-       app:min="20"
-       app:unit="@string/secs"
+       app:defValue="30"
+       app:maxValue="120"
+       app:minValue="20"
+       app:stepsNumber="20"
+       app:unitName="@string/secs"
        android:persistent="true"
-
        />
 
 

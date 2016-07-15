@@ -5,8 +5,6 @@ import android.content.res.TypedArray;
 import android.support.v7.preference.DialogPreference;
 
 import android.util.AttributeSet;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import io.github.d2edev.distinctivering.R;
 
@@ -16,13 +14,12 @@ import io.github.d2edev.distinctivering.R;
 public class SeekBarDialogPreference extends DialogPreference {
 
     private static final String TAG = "TAG_" + SeekBarDialogPreference.class.getSimpleName();
-    private Context mContext;
-    private SeekBar mSeekBar;
-    private TextView mValueText;
-    private int mDefault, mMax, mMin;
-    private String mUnit, mKey;
-    private static final String ANDROIDNS = "http://schemas.android.com/apk/res/android";
-    private static final String APPNS = "http://schemas.android.com/apk/res-auto";
+    public static final int MIN_VALUE = 0;
+    public static final int DEF_VALUE = 50;
+    public static final int MAX_VALUE = 100;
+    public static final int MAX_STEP_QTY = 100;
+    private int mDefault, mMax, mMin, mStepsQty;
+    private String mUnit;
 
 
     public SeekBarDialogPreference(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -36,27 +33,40 @@ public class SeekBarDialogPreference extends DialogPreference {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        // Get seekbear settinns from xml :
-        int[] attrsArray = new int[]{
-                R.attr.min,
-                android.R.attr.defaultValue,
-                android.R.attr.max,
-                R.attr.step,
-                R.attr.unit,
-        };
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, attrsArray);
-        mMin = typedArray.getInt(0, 20);
-        mDefault = typedArray.getInt(1, 30);
-        mMax = typedArray.getInt(2, 120);
-        mUnit = typedArray.getString(4);
-        //TODO step implementation
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SeekBarDialogPreference);
+        mMin = typedArray.getInt(R.styleable.SeekBarDialogPreference_minValue, MIN_VALUE);
+        mDefault = typedArray.getInt(R.styleable.SeekBarDialogPreference_defValue, DEF_VALUE);
+        mMax = typedArray.getInt(R.styleable.SeekBarDialogPreference_maxValue, MAX_VALUE);
+        mUnit = typedArray.getString(R.styleable.SeekBarDialogPreference_unitName);
+        mStepsQty = typedArray.getInt(R.styleable.SeekBarDialogPreference_stepsNumber, MAX_STEP_QTY);
+        //attrs check
+        if(mMax==mMin){
+            throw new IllegalArgumentException("Provided minValue and maxValue are equal.");
+        }
+        //switch min|max if needed
+        if(mMax<mMin){
+            int tmp=mMax;
+            mMax=mMin;
+            mMin=tmp;
+        }
+        //normalize step qty if needed
+        int possibleStepQTY= mMax-mMin;
+        if(possibleStepQTY> MAX_STEP_QTY){
+            possibleStepQTY= MAX_STEP_QTY;
+        }
+        if(mStepsQty<1||mStepsQty>possibleStepQTY){
+            mStepsQty=possibleStepQTY;
+        }
+        //normalize default if needed
+        if(mDefault<mMin||mDefault>mMax){
+            mDefault=mMin+(mMax-mMin)/2;
+        }
         setDialogLayoutResource(R.layout.dialog_seek_bar);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
         setDialogIcon(null);
-
+        typedArray.recycle();
     }
-
 
     public int getMaxValue() {
         return mMax;
@@ -74,6 +84,7 @@ public class SeekBarDialogPreference extends DialogPreference {
         return mUnit;
     }
 
+    public int getStepQty() {        return mStepsQty;    }
 
     @Override
     public void notifyChanged() {

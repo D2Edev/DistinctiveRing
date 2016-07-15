@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -415,7 +416,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         dialog.cancel();
                     }
                 });
-        Switch dialogSwitch = (Switch) dialogView.findViewById(R.id.scroll_dialog_switch);
+        SwitchCompat dialogSwitch = (SwitchCompat) dialogView.findViewById(R.id.scroll_dialog_switch);
         dialogSwitch.setChecked(Utility.getShowStartupMessage(getActivity()));
         dialogSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
