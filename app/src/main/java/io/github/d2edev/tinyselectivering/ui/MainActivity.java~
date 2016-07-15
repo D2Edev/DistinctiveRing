@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
     public static final int DR_ACTIVE_NOTIFY = 301;
     private static final int REQUEST_GRANT_PHONE_STATE_ACCESS = 101;
     //TODO finalize marsmallow permissins logic
-    //TODO comments! (check app rename!)
-
+    //TODO comments!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
