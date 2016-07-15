@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 
 import android.Manifest;
@@ -35,17 +35,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.d2edev.distinctivering.BuildConfig;
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
-import io.github.d2edev.distinctivering.db.DataContract;
-import io.github.d2edev.distinctivering.logic.DataSetWatcher;
-import io.github.d2edev.distinctivering.logic.MyApp;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.BuildConfig;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.adapters.NameNumPicListAdapter;
+import io.github.d2edev.tinyselectivering.db.DataContract;
+import io.github.d2edev.tinyselectivering.logic.DataSetWatcher;
+import io.github.d2edev.tinyselectivering.logic.MyApp;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DataSetWatcher {

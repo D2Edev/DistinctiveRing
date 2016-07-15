@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.d2edev.distinctivering">
+    package="io.github.d2edev.tinyselectivering">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -10,14 +10,14 @@
 
 
     <application
-        android:name=".logic.MyApp"
+        android:name="io.github.d2edev.tinyselectivering.logic.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name="io.github.d2edev.tinyselectivering.ui.MainActivity"
             android:label="@string/title_activity_main_fab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -28,17 +28,17 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".logic.PhoneEventReceiver">
+        <receiver android:name="io.github.d2edev.tinyselectivering.logic.PhoneEventReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:name=".db.DataProvider"
+            android:name="io.github.d2edev.tinyselectivering.db.DataProvider"
             android:authorities="@string/content_authority"
             android:exported="false" />
-        <service android:name=".logic.TimerService"/>
+        <service android:name="io.github.d2edev.tinyselectivering.logic.TimerService"/>
     </application>
 
 </manifest>

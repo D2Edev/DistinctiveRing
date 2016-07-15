@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 /**
  * Created by d2e on nobody cares when
  * UI logic whеn deleting records
@@ -29,12 +29,12 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.adapters.NameNumPicListAdapter;
-import io.github.d2edev.distinctivering.db.DataContract;
-import io.github.d2edev.distinctivering.db.EntryDeleteTask;
-import io.github.d2edev.distinctivering.logic.DataSetWatcher;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.adapters.NameNumPicListAdapter;
+import io.github.d2edev.tinyselectivering.db.DataContract;
+import io.github.d2edev.tinyselectivering.db.EntryDeleteTask;
+import io.github.d2edev.tinyselectivering.logic.DataSetWatcher;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 
 public class DeleteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, DataSetWatcher {

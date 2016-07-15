@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,7 +6,7 @@ import android.support.v7.preference.DialogPreference;
 
 import android.util.AttributeSet;
 
-import io.github.d2edev.distinctivering.R;
+import io.github.d2edev.tinyselectivering.R;
 
 /**
  * Created by d2e on 09.07.16.

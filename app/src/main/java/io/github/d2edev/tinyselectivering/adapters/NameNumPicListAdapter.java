@@ -1,10 +1,8 @@
-package io.github.d2edev.distinctivering.adapters;
+package io.github.d2edev.tinyselectivering.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Build;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +13,9 @@ import android.widget.TextView;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 /**
  * Created by d2e on 15.06.16.

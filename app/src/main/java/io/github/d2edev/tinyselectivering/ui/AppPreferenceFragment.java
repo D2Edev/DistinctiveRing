@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 /**
  * Created by d2e on 07.07.16.

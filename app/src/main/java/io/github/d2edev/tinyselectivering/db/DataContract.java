@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.db;
+package io.github.d2edev.tinyselectivering.db;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -12,7 +12,7 @@ import android.provider.BaseColumns;
 
 public class DataContract {
     // name for the entire content provider which needs to be unique on the device.
-    public static final String CONTENT_AUTHORITY = "io.github.d2edev.distinctivering";
+    public static final String CONTENT_AUTHORITY = "io.github.d2edev.tinyselectivering";
     // using CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
     // the content provider.
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

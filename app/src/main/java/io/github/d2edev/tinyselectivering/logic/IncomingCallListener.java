@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.logic;
+package io.github.d2edev.tinyselectivering.logic;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.db;
+package io.github.d2edev.tinyselectivering.db;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;

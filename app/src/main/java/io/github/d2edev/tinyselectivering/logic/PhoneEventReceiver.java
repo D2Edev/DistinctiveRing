@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.logic;
+package io.github.d2edev.tinyselectivering.logic;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import io.github.d2edev.distinctivering.BuildConfig;
+import io.github.d2edev.tinyselectivering.BuildConfig;
 
 /**
  * Created by d2e on 10.06.16.

@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.db;
+package io.github.d2edev.tinyselectivering.db;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

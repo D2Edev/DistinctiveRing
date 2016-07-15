@@ -9,7 +9,7 @@
         android:title="@string/show_on_startup_title"
         />
 
-   <io.github.d2edev.distinctivering.ui.SeekBarDialogPreference
+   <io.github.d2edev.tinyselectivering.ui.SeekBarDialogPreference
        android:key="@string/pref_key_time_window"
        android:title="@string/timewindow_title"
        app:defValue="30"

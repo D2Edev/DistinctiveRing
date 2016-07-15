@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 /**
  * Created by d2e on 23.06.16.

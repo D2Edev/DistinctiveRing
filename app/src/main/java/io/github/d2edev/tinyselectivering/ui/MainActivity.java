@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -21,9 +21,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.d2edev.distinctivering.BuildConfig;
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.BuildConfig;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 public class MainActivity extends AppCompatActivity implements BasicActionsListener {
     public static final String TAG = "TAG_" + MainActivity.class.getSimpleName();

@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering;
+package io.github.d2edev.tinyselectivering;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,8 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-import io.github.d2edev.distinctivering.db.DataContract;
-import io.github.d2edev.distinctivering.db.DataDBHelper;
+import io.github.d2edev.tinyselectivering.db.DataContract;
+import io.github.d2edev.tinyselectivering.db.DataDBHelper;
 
 import static org.junit.Assert.*;
 

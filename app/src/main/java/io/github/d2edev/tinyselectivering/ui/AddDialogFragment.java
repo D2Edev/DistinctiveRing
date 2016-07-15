@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,11 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.db.DataContract;
-import io.github.d2edev.distinctivering.db.EntrySaveTask;
-import io.github.d2edev.distinctivering.logic.DataSetWatcher;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.db.DataContract;
+import io.github.d2edev.tinyselectivering.db.EntrySaveTask;
+import io.github.d2edev.tinyselectivering.logic.DataSetWatcher;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 /**
  * Implements adding new entry with name,number, picture

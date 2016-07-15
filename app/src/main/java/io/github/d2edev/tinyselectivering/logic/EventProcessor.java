@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.logic;
+package io.github.d2edev.tinyselectivering.logic;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import io.github.d2edev.distinctivering.BuildConfig;
-import io.github.d2edev.distinctivering.util.Utility;
+import io.github.d2edev.tinyselectivering.BuildConfig;
+import io.github.d2edev.tinyselectivering.util.Utility;
 
 /**
  * Created by d2e on 10.06.16.

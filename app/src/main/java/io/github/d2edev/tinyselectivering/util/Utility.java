@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.util;
+package io.github.d2edev.tinyselectivering.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,16 +11,13 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,9 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import io.github.d2edev.distinctivering.BuildConfig;
-import io.github.d2edev.distinctivering.R;
-import io.github.d2edev.distinctivering.db.DataContract;
+import io.github.d2edev.tinyselectivering.R;
+import io.github.d2edev.tinyselectivering.db.DataContract;
 
 /**
  * Created by d2e on 10.06.16.

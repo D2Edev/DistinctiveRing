@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.ui;
+package io.github.d2edev.tinyselectivering.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import io.github.d2edev.distinctivering.R;
+import io.github.d2edev.tinyselectivering.R;
 
 /**
  * Created by d2e on 10.07.16.

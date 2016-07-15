@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.logic;
+package io.github.d2edev.tinyselectivering.logic;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import io.github.d2edev.distinctivering.BuildConfig;
+import io.github.d2edev.tinyselectivering.BuildConfig;
 
 /**
  * Created by d2e on 01.07.16.

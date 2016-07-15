@@ -1,4 +1,4 @@
-package io.github.d2edev.distinctivering.db;
+package io.github.d2edev.tinyselectivering.db;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import java.io.File;
 
-import io.github.d2edev.distinctivering.logic.DataSetWatcher;
+import io.github.d2edev.tinyselectivering.logic.DataSetWatcher;
 
 
 /**
