@@ -3,6 +3,7 @@ package io.github.d2edev.tinyselectivering.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,7 @@ public class NameNumPicListAdapter extends CursorAdapter {
 //        Log.d(TAG, "bindView: cursor " + cursor.getString(0) +" " +cursor.getString(1)+ " "
 //                + cursor.getString(2)+ " " + cursor.getString(3) );
         if (selectedNumIDs.contains(cursor.getInt(5))) {
-            view.setBackgroundColor(context.getColor(R.color.my_accent_light));
+            view.setBackgroundColor(ContextCompat.getColor(context,R.color.my_accent_light));
         } else {
             view.setBackgroundColor(Color.TRANSPARENT);
         }
