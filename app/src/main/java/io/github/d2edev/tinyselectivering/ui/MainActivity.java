@@ -113,10 +113,15 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.about_item, null);
         TextView header = (TextView) view.findViewById(R.id.about_header);
-        header.setText(getString(R.string.app_name)
-                + " v." + Utility.getAppVersion(this)
-                + "\n"
-                + Utility.getLastBuildTime(this));
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append(getString(R.string.app_name))
+                .append(" v.")
+                .append(Utility.getAppVersion(this))
+                .append(BuildConfig.DEBUG ? " D" : " R")
+                .append("\n")
+                .append(Utility.getLastBuildTime(this));
+        header.setText(sb.toString());
         TextView linkText = (TextView) view.findViewById(R.id.about_link);
         linkText.setOnClickListener(new View.OnClickListener() {
             @Override

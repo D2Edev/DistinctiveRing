@@ -9,16 +9,16 @@
         android:title="@string/show_on_startup_title"
         />
 
-   <io.github.d2edev.tinyselectivering.ui.SeekBarDialogPreference
-       android:key="@string/pref_key_time_window"
-       android:title="@string/timewindow_title"
-       app:defValue="30"
-       app:maxValue="120"
-       app:minValue="20"
-       app:stepsNumber="20"
-       app:unitName="@string/secs"
-       android:persistent="true"
-       />
+    <io.github.d2edev.tinyselectivering.ui.SeekBarDialogPreference
+        android:key="@string/pref_key_time_window"
+        android:title="@string/timewindow_title"
+        app:defValue="30"
+        app:maxValue="120"
+        app:minValue="20"
+        app:stepsNumber="20"
+        app:unitName="@string/secs"
+        android:persistent="true"
+        />
 
 
 </PreferenceScreen>

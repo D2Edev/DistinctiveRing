@@ -196,7 +196,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void headerSortOrderClicked() {
-        Log.d(TAG, "order clicked");
         mSortAsc = mSortAsc ? false : true;
         mHeaderSortOrder.setText(mSortOrder[Utility.getSortOrderIndex(mSortAsc)]);
         rebuildList();
@@ -209,7 +208,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         } else {
             mSortTypeIndex++;
         }
-        Log.d(TAG, "criteria clicked " + mSortTypeIndex);
         mHeaderTextSortBy.setText(mSortBy[mSortTypeIndex]);
         rebuildList();
     }
