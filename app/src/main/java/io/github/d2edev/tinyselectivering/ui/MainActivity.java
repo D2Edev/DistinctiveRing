@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements BasicActionsListe
         StringBuilder sb = new StringBuilder();
         sb
                 .append(getString(R.string.app_name))
-                .append(" v.")
+                .append("\n v.")
                 .append(Utility.getAppVersion(this))
                 .append(BuildConfig.DEBUG ? " D" : " R")
                 .append("\n")
